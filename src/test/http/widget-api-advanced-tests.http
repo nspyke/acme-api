@@ -1,0 +1,65 @@
+### Create multiple widgets for testing
+
+### Create Widget 1
+POST http://localhost:8080/api/widgets
+Content-Type: application/json
+
+{
+  "name": "Basic Widget",
+  "description": "A simple widget for basic tasks",
+  "image": "basic-widget.jpg"
+}
+
+### Create Widget 2
+POST http://localhost:8080/api/widgets
+Content-Type: application/json
+
+{
+  "name": "Advanced Widget",
+  "description": "A more advanced widget with additional features",
+  "image": "advanced-widget.jpg"
+}
+
+### Create Widget 3
+POST http://localhost:8080/api/widgets
+Content-Type: application/json
+
+{
+  "name": "Premium Widget",
+  "description": "Our top-of-the-line widget with all features",
+  "image": "premium-widget.jpg"
+}
+
+### Get all widgets to verify creation
+GET http://localhost:8080/api/widgets
+
+### Search widgets by partial name match (should return Basic Widget)
+GET http://localhost:8080/api/widgets/search/byName?name=Basic
+
+### Search widgets by partial name match (should return Advanced Widget)
+GET http://localhost:8080/api/widgets/search/byName?name=Advanced
+
+### Search widgets by partial name match (should return all widgets with "Widget" in the name)
+GET http://localhost:8080/api/widgets/search/byName?name=Widget
+
+### Search widgets by partial description match (should return widgets with "features" in the description)
+GET http://localhost:8080/api/widgets/search/byDescription?description=features
+
+### Search widgets by partial description match (should return widgets with "widget" in the description)
+GET http://localhost:8080/api/widgets/search/byDescription?description=widget
+
+### Update Widget 1 (replace 1 with actual ID after creation)
+PUT http://localhost:8080/api/widgets/1
+Content-Type: application/json
+
+{
+  "name": "Basic Widget 2.0",
+  "description": "An improved version of our basic widget",
+  "image": "basic-widget-2.jpg"
+}
+
+### Get updated widget to verify changes
+GET http://localhost:8080/api/widgets/1
+
+### Search for updated widget by new name
+GET http://localhost:8080/api/widgets/search/byName?name=2.0

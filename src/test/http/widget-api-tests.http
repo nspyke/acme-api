@@ -1,0 +1,31 @@
+### Create a new widget
+POST http://localhost:8080/api/v1/widgets
+Content-Type: application/json
+
+{
+  "name": "Test Widget",
+  "description": "This is a test widget created via HTTP request",
+  "image": "test-widget.jpg"
+}
+
+### Get all widgets
+GET http://localhost:8080/api/v1/widgets
+
+### Get widget by ID (replace 1 with actual ID after creation)
+GET http://localhost:8080/api/v1/widgets/1
+
+### Update a widget (replace 1 with actual ID after creation)
+PUT http://localhost:8080/api/v1/widgets/1
+Content-Type: application/json
+
+{
+  "name": "Updated Widget",
+  "description": "This widget has been updated via HTTP request",
+  "image": "updated-widget.jpg"
+}
+
+### Search widgets by name
+GET http://localhost:8080/api/v1/widgets/search/byName?name=Test
+
+### Search widgets by description
+GET http://localhost:8080/api/v1/widgets/search/byDescription?description=test

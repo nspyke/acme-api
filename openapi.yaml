@@ -1,0 +1,295 @@
+openapi: 3.0.0
+
+info:
+  title: ACME API
+  description: |
+    ACME Corporation API for Widgets and Doodads.
+  version: 1.0.0
+
+servers:
+  - url: 'http://localhost:8080'
+
+paths:
+  /api/v1/widgets:
+    post:
+      summary: Create a new widget
+      description: Creates a new widget with the provided data
+      operationId: createWidget
+      requestBody:
+        $ref: '#/components/requestBodies/WidgetCreateRequest'
+      responses:
+        '201':
+          $ref: '#/components/responses/WidgetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityResponse'
+        '500':
+          $ref: '#/components/responses/ServerErrorResponse'
+    get:
+      summary: Get all widgets
+      description: Returns a list of all widgets
+      operationId: getAllWidgets
+      responses:
+        '200':
+          $ref: '#/components/responses/WidgetListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityResponse'
+        '500':
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /api/v1/widgets/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: The widget ID
+    get:
+      summary: Get a widget by ID
+      description: Returns a widget by its ID
+      operationId: getWidgetById
+      responses:
+        '200':
+          $ref: '#/components/responses/WidgetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityResponse'
+        '500':
+          $ref: '#/components/responses/ServerErrorResponse'
+    put:
+      summary: Update a widget
+      description: Updates an existing widget with the provided data
+      operationId: updateWidget
+      requestBody:
+        $ref: '#/components/requestBodies/WidgetUpdateRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/WidgetResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityResponse'
+        '500':
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /api/v1/widgets/search/byName:
+    get:
+      summary: Find widgets by name
+      description: Returns widgets with names containing the search term (case-insensitive)
+      operationId: findWidgetsByName
+      parameters:
+        - name: name
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The name to search for
+      responses:
+        '200':
+          $ref: '#/components/responses/WidgetListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityResponse'
+        '500':
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /api/v1/widgets/search/byDescription:
+    get:
+      summary: Find widgets by description
+      description: Returns widgets with descriptions containing the search term (case-insensitive)
+      operationId: findWidgetsByDescription
+      parameters:
+        - name: description
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The description to search for
+      responses:
+        '200':
+          $ref: '#/components/responses/WidgetListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityResponse'
+        '500':
+          $ref: '#/components/responses/ServerErrorResponse'
+
+components:
+  schemas:
+    WidgetDto:
+      type: object
+      description: Data Transfer Object for Widget entities
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The widget identifier
+        name:
+          type: string
+          description: The widget name
+        description:
+          type: string
+          description: The widget description
+        image:
+          type: string
+          description: The widget image reference
+
+    WidgetRequest:
+      type: object
+      description: Data Transfer Object for creating or updating Widget entities
+      required:
+        - name
+        - description
+        - image
+      properties:
+        name:
+          type: string
+          description: The widget name
+        description:
+          type: string
+          description: The widget description
+        image:
+          type: string
+          description: The widget image reference
+
+    ProblemDetail:
+      type: object
+      description: Standard error response following RFC 7807
+      required:
+        - type
+        - title
+        - status
+      properties:
+        type:
+          type: string
+          description: A URI reference that identifies the problem type
+          example: "https://example.com/problems/constraint-violation"
+        title:
+          type: string
+          description: A short, human-readable summary of the problem type
+          example: "Constraint Violation"
+        status:
+          type: integer
+          description: The HTTP status code
+          example: 400
+        detail:
+          type: string
+          description: A human-readable explanation specific to this occurrence of the problem
+          example: "The name field cannot be empty"
+        instance:
+          type: string
+          description: A URI reference that identifies the specific occurrence of the problem
+          example: "/api/v1/widgets/123"
+        properties:
+          type: object
+          description: Additional properties specific to the error
+          additionalProperties: true
+
+  requestBodies:
+    WidgetCreateRequest:
+      description: Request body for creating a widget
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WidgetRequest'
+
+    WidgetUpdateRequest:
+      description: Request body for updating a widget
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WidgetRequest'
+
+  responses:
+    WidgetResponse:
+      description: A single widget
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/WidgetDto'
+
+    WidgetListResponse:
+      description: A list of widgets
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/WidgetDto'
+
+    BadRequestResponse:
+      description: Bad request due to invalid input
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          examples:
+            validation-error:
+              value:
+                type: "https://example.com/problems/validation-error"
+                title: "Validation Error"
+                status: 400
+                detail: "The request contains invalid parameters"
+                instance: "/api/v1/widgets"
+
+    NotFoundResponse:
+      description: Resource not found
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          examples:
+            widget-not-found:
+              value:
+                type: "https://example.com/problems/not-found"
+                title: "Resource Not Found"
+                status: 404
+                detail: "The requested widget could not be found"
+                instance: "/api/v1/widgets/999"
+
+    UnprocessableEntityResponse:
+      description: Unprocessable entity due to validation errors
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          examples:
+            validation-error:
+              value:
+                type: "https://example.com/problems/validation-error"
+                title: "Validation Error"
+                status: 422
+                detail: "The request contains validation errors"
+                instance: "/api/v1/widgets"
+                properties:
+                  errors: 
+                    name: "Name must be between 3 and 50 characters"
+
+    ServerErrorResponse:
+      description: Internal server error
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ProblemDetail'
+          examples:
+            server-error:
+              value:
+                type: "https://example.com/problems/server-error"
+                title: "Internal Server Error"
+                status: 500
+                detail: "An unexpected error occurred"
+                instance: "/api/v1/widgets"
