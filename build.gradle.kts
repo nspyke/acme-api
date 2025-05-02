@@ -2,6 +2,7 @@ plugins {
     java
     id("org.springframework.boot") version "3.4.5"
     id("io.spring.dependency-management") version "1.1.7"
+    id("com.diffplug.spotless") version "6.25.0"
 }
 
 group = "com.nspyke"
@@ -37,4 +38,18 @@ dependencies {
 tasks.withType<Test> {
     useJUnitPlatform()
     jvmArgs("-javaagent:${classpath.find { it.name.contains("byte-buddy-agent") }?.absolutePath}")
+}
+
+spotless {
+    java {
+        // Use the Palantir Java formatter
+        palantirJavaFormat()
+
+        // Apply to all Java files in the project
+        target("src/*/java/**/*.java")
+
+        // Remove unused imports
+        importOrder()
+        removeUnusedImports()
+    }
 }

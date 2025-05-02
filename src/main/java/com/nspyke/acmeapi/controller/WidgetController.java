@@ -3,12 +3,11 @@ package com.nspyke.acmeapi.controller;
 import com.nspyke.acmeapi.model.dto.WidgetDto;
 import com.nspyke.acmeapi.service.WidgetService;
 import jakarta.validation.Valid;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 /**
  * REST controller for Widget operations.
@@ -45,8 +44,7 @@ public class WidgetController {
      */
     @GetMapping
     public ResponseEntity<List<WidgetDto>> getAllWidgets(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String description) {
+            @RequestParam(required = false) String name, @RequestParam(required = false) String description) {
 
         List<WidgetDto> widgets = widgetService.findWidgets(name, description);
         return ResponseEntity.ok(widgets);
@@ -60,7 +58,8 @@ public class WidgetController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<WidgetDto> getWidgetById(@PathVariable Long id) {
-        return widgetService.getWidgetById(id)
+        return widgetService
+                .getWidgetById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -74,9 +73,9 @@ public class WidgetController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<WidgetDto> updateWidget(@PathVariable Long id, @Valid @RequestBody WidgetDto widgetDto) {
-        return widgetService.updateWidget(id, widgetDto)
+        return widgetService
+                .updateWidget(id, widgetDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-
 }

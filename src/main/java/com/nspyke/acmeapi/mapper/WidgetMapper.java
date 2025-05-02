@@ -2,10 +2,9 @@ package com.nspyke.acmeapi.mapper;
 
 import com.nspyke.acmeapi.model.dto.WidgetDto;
 import com.nspyke.acmeapi.model.entity.Widget;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Component;
 
 /**
  * Mapper class for converting between Widget entity and WidgetDto.
@@ -23,12 +22,7 @@ public class WidgetMapper {
         if (widget == null) {
             return null;
         }
-        return new WidgetDto(
-                widget.getId(),
-                widget.getName(),
-                widget.getDescription(),
-                widget.getImage()
-        );
+        return new WidgetDto(widget.getId(), widget.getName(), widget.getDescription(), widget.getImage());
     }
 
     /**
@@ -41,13 +35,13 @@ public class WidgetMapper {
         if (widgetDto == null) {
             return null;
         }
-        
+
         Widget widget = new Widget();
         widget.setId(widgetDto.id());
         widget.setName(widgetDto.name());
         widget.setDescription(widgetDto.description());
         widget.setImage(widgetDto.image());
-        
+
         return widget;
     }
 
@@ -62,7 +56,7 @@ public class WidgetMapper {
         if (widget == null || widgetDto == null) {
             return widget;
         }
-        
+
         // Only update non-null fields
         if (widgetDto.name() != null) {
             widget.setName(widgetDto.name());
@@ -73,7 +67,7 @@ public class WidgetMapper {
         if (widgetDto.image() != null) {
             widget.setImage(widgetDto.image());
         }
-        
+
         return widget;
     }
 
@@ -87,8 +81,6 @@ public class WidgetMapper {
         if (widgets == null) {
             return List.of();
         }
-        return widgets.stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
+        return widgets.stream().map(this::toDto).collect(Collectors.toList());
     }
 }

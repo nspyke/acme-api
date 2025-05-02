@@ -1,7 +1,6 @@
 package com.nspyke.acmeapi.service;
 
 import com.nspyke.acmeapi.model.dto.WidgetDto;
-
 import java.util.List;
 import java.util.Optional;
 

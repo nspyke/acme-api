@@ -1,11 +1,11 @@
 package com.nspyke.acmeapi.model.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Column;
 
 /**
  * Entity class representing a Widget in the system.
@@ -28,8 +28,7 @@ public class Widget {
     private String image;
 
     // Default constructor required by JPA
-    public Widget() {
-    }
+    public Widget() {}
 
     // Constructor with all fields except id
     public Widget(String name, String description, String image) {
@@ -73,11 +72,10 @@ public class Widget {
 
     @Override
     public String toString() {
-        return "Widget{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", image='" + image + '\'' +
-                '}';
+        return "Widget{" + "id="
+                + id + ", name='"
+                + name + '\'' + ", description='"
+                + description + '\'' + ", image='"
+                + image + '\'' + '}';
     }
 }

@@ -8,12 +8,9 @@ import jakarta.validation.constraints.NotBlank;
  */
 public record WidgetDto(
         Long id,
-        @NotBlank(message = "Name is required")
-        String name,
-        @NotBlank(message = "Description is required")
-        String description,
-        @NotBlank(message = "Image is required")
-        String image) {
+        @NotBlank(message = "Name is required") String name,
+        @NotBlank(message = "Description is required") String description,
+        @NotBlank(message = "Image is required") String image) {
 
     /**
      * Default constructor that creates a WidgetDto with null values.

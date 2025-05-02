@@ -9,5 +9,4 @@ public class AcmeApiApplication {
     public static void main(String[] args) {
         SpringApplication.run(AcmeApiApplication.class, args);
     }
-
 }

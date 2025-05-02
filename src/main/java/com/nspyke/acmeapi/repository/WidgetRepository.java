@@ -1,10 +1,9 @@
 package com.nspyke.acmeapi.repository;
 
 import com.nspyke.acmeapi.model.entity.Widget;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 /**
  * Repository interface for Widget entities.

@@ -5,12 +5,11 @@ import com.nspyke.acmeapi.model.dto.WidgetDto;
 import com.nspyke.acmeapi.model.entity.Widget;
 import com.nspyke.acmeapi.repository.WidgetRepository;
 import com.nspyke.acmeapi.service.WidgetService;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Optional;
 
 /**
  * Implementation of the WidgetService interface.
@@ -45,13 +44,13 @@ public class WidgetServiceImpl implements WidgetService {
     @Override
     @Transactional(readOnly = true)
     public Optional<WidgetDto> getWidgetById(Long id) {
-        return widgetRepository.findById(id)
-                .map(widgetMapper::toDto);
+        return widgetRepository.findById(id).map(widgetMapper::toDto);
     }
 
     @Override
     public Optional<WidgetDto> updateWidget(Long id, WidgetDto widgetDto) {
-        return widgetRepository.findById(id)
+        return widgetRepository
+                .findById(id)
                 .map(existingWidget -> {
                     Widget updatedWidget = widgetMapper.updateEntityFromDto(existingWidget, widgetDto);
                     return widgetRepository.save(updatedWidget);
@@ -88,7 +87,8 @@ public class WidgetServiceImpl implements WidgetService {
     }
 
     private List<WidgetDto> findWidgetsByNameAndDescription(String name, String description) {
-        List<Widget> widgets = widgetRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(name, description);
+        List<Widget> widgets =
+                widgetRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(name, description);
         return widgetMapper.toDtoList(widgets);
     }
 }
