@@ -1,7 +1,7 @@
 ### Create multiple widgets for testing
 
 ### Create Widget 1
-POST http://localhost:8080/api/widgets
+POST http://localhost:8080/api/v1/widgets
 Content-Type: application/json
 
 {
@@ -11,7 +11,7 @@ Content-Type: application/json
 }
 
 ### Create Widget 2
-POST http://localhost:8080/api/widgets
+POST http://localhost:8080/api/v1/widgets
 Content-Type: application/json
 
 {
@@ -21,7 +21,7 @@ Content-Type: application/json
 }
 
 ### Create Widget 3
-POST http://localhost:8080/api/widgets
+POST http://localhost:8080/api/v1/widgets
 Content-Type: application/json
 
 {
@@ -31,25 +31,25 @@ Content-Type: application/json
 }
 
 ### Get all widgets to verify creation
-GET http://localhost:8080/api/widgets
+GET http://localhost:8080/api/v1/widgets
 
 ### Search widgets by partial name match (should return Basic Widget)
-GET http://localhost:8080/api/widgets/search/byName?name=Basic
+GET http://localhost:8080/api/v1/widgets/search/byName?name=Basic
 
 ### Search widgets by partial name match (should return Advanced Widget)
-GET http://localhost:8080/api/widgets/search/byName?name=Advanced
+GET http://localhost:8080/api/v1/widgets/search/byName?name=Advanced
 
 ### Search widgets by partial name match (should return all widgets with "Widget" in the name)
-GET http://localhost:8080/api/widgets/search/byName?name=Widget
+GET http://localhost:8080/api/v1/widgets/search/byName?name=Widget
 
 ### Search widgets by partial description match (should return widgets with "features" in the description)
-GET http://localhost:8080/api/widgets/search/byDescription?description=features
+GET http://localhost:8080/api/v1/widgets/search/byDescription?description=features
 
 ### Search widgets by partial description match (should return widgets with "widget" in the description)
-GET http://localhost:8080/api/widgets/search/byDescription?description=widget
+GET http://localhost:8080/api/v1/widgets/search/byDescription?description=widget
 
 ### Update Widget 1 (replace 1 with actual ID after creation)
-PUT http://localhost:8080/api/widgets/1
+PUT http://localhost:8080/api/v1/widgets/1
 Content-Type: application/json
 
 {
@@ -59,7 +59,7 @@ Content-Type: application/json
 }
 
 ### Get updated widget to verify changes
-GET http://localhost:8080/api/widgets/1
+GET http://localhost:8080/api/v1/widgets/1
 
 ### Search for updated widget by new name
-GET http://localhost:8080/api/widgets/search/byName?name=2.0
+GET http://localhost:8080/api/v1/widgets/search/byName?name=2.0
