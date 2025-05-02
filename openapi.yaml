@@ -10,6 +10,91 @@ servers:
   - url: 'http://localhost:8080'
 
 paths:
+  /api/v1/doodads:
+    post:
+      summary: Create a new doodad
+      description: Creates a new doodad with the provided data
+      operationId: createDoodad
+      requestBody:
+        $ref: '#/components/requestBodies/DoodadCreateRequest'
+      responses:
+        '201':
+          $ref: '#/components/responses/DoodadResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityResponse'
+        '500':
+          $ref: '#/components/responses/ServerErrorResponse'
+    get:
+      summary: Get all doodads
+      description: Returns a list of all doodads with optional filtering
+      operationId: getAllDoodads
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter doodads by name (case-insensitive, partial match)
+        - name: description
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter doodads by description (case-insensitive, partial match)
+      responses:
+        '200':
+          $ref: '#/components/responses/DoodadListResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityResponse'
+        '500':
+          $ref: '#/components/responses/ServerErrorResponse'
+
+  /api/v1/doodads/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: The doodad ID
+    get:
+      summary: Get a doodad by ID
+      description: Returns a doodad by its ID
+      operationId: getDoodadById
+      responses:
+        '200':
+          $ref: '#/components/responses/DoodadResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityResponse'
+        '500':
+          $ref: '#/components/responses/ServerErrorResponse'
+    put:
+      summary: Update a doodad
+      description: Updates an existing doodad with the provided data
+      operationId: updateDoodad
+      requestBody:
+        $ref: '#/components/requestBodies/DoodadUpdateRequest'
+      responses:
+        '200':
+          $ref: '#/components/responses/DoodadResponse'
+        '400':
+          $ref: '#/components/responses/BadRequestResponse'
+        '404':
+          $ref: '#/components/responses/NotFoundResponse'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntityResponse'
+        '500':
+          $ref: '#/components/responses/ServerErrorResponse'
+
   /api/v1/widgets:
     post:
       summary: Create a new widget
@@ -98,6 +183,51 @@ paths:
 
 components:
   schemas:
+    DoodadDto:
+      type: object
+      description: Data Transfer Object for Doodad entities
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: The doodad identifier
+        name:
+          type: string
+          description: The doodad name
+        description:
+          type: string
+          description: The doodad description
+        image:
+          type: string
+          description: The doodad image reference
+        price:
+          type: number
+          format: float
+          description: The doodad price
+
+    DoodadRequest:
+      type: object
+      description: Data Transfer Object for creating or updating Doodad entities
+      required:
+        - name
+        - description
+        - image
+        - price
+      properties:
+        name:
+          type: string
+          description: The doodad name
+        description:
+          type: string
+          description: The doodad description
+        image:
+          type: string
+          description: The doodad image reference
+        price:
+          type: number
+          format: float
+          description: The doodad price
+
     WidgetDto:
       type: object
       description: Data Transfer Object for Widget entities
@@ -168,6 +298,22 @@ components:
           additionalProperties: true
 
   requestBodies:
+    DoodadCreateRequest:
+      description: Request body for creating a doodad
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DoodadRequest'
+
+    DoodadUpdateRequest:
+      description: Request body for updating a doodad
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DoodadRequest'
+
     WidgetCreateRequest:
       description: Request body for creating a widget
       required: true
@@ -185,6 +331,22 @@ components:
             $ref: '#/components/schemas/WidgetRequest'
 
   responses:
+    DoodadResponse:
+      description: A single doodad
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DoodadDto'
+
+    DoodadListResponse:
+      description: A list of doodads
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: '#/components/schemas/DoodadDto'
+
     WidgetResponse:
       description: A single widget
       content:
@@ -214,7 +376,21 @@ components:
                 title: "Validation Error"
                 status: 400
                 detail: "The request contains invalid parameters"
+                instance: "/api/v1/resources"
+            widget-validation-error:
+              value:
+                type: "https://example.com/problems/validation-error"
+                title: "Validation Error"
+                status: 400
+                detail: "The request contains invalid parameters"
                 instance: "/api/v1/widgets"
+            doodad-validation-error:
+              value:
+                type: "https://example.com/problems/validation-error"
+                title: "Validation Error"
+                status: 400
+                detail: "The request contains invalid parameters"
+                instance: "/api/v1/doodads"
 
     NotFoundResponse:
       description: Resource not found
@@ -223,6 +399,13 @@ components:
           schema:
             $ref: '#/components/schemas/ProblemDetail'
           examples:
+            resource-not-found:
+              value:
+                type: "https://example.com/problems/not-found"
+                title: "Resource Not Found"
+                status: 404
+                detail: "The requested resource could not be found"
+                instance: "/api/v1/resources/999"
             widget-not-found:
               value:
                 type: "https://example.com/problems/not-found"
@@ -230,6 +413,13 @@ components:
                 status: 404
                 detail: "The requested widget could not be found"
                 instance: "/api/v1/widgets/999"
+            doodad-not-found:
+              value:
+                type: "https://example.com/problems/not-found"
+                title: "Resource Not Found"
+                status: 404
+                detail: "The requested doodad could not be found"
+                instance: "/api/v1/doodads/999"
 
     UnprocessableEntityResponse:
       description: Unprocessable entity due to validation errors
@@ -248,6 +438,17 @@ components:
                 properties:
                   errors: 
                     name: "Name must be between 3 and 50 characters"
+            doodad-validation-error:
+              value:
+                type: "https://example.com/problems/validation-error"
+                title: "Validation Error"
+                status: 422
+                detail: "The request contains validation errors"
+                instance: "/api/v1/doodads"
+                properties:
+                  errors: 
+                    name: "Name must be between 3 and 50 characters"
+                    price: "Price must be a positive number"
 
     ServerErrorResponse:
       description: Internal server error
@@ -262,4 +463,18 @@ components:
                 title: "Internal Server Error"
                 status: 500
                 detail: "An unexpected error occurred"
+                instance: "/api/v1/resources"
+            widget-server-error:
+              value:
+                type: "https://example.com/problems/server-error"
+                title: "Internal Server Error"
+                status: 500
+                detail: "An unexpected error occurred"
                 instance: "/api/v1/widgets"
+            doodad-server-error:
+              value:
+                type: "https://example.com/problems/server-error"
+                title: "Internal Server Error"
+                status: 500
+                detail: "An unexpected error occurred"
+                instance: "/api/v1/doodads"
