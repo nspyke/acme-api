@@ -37,13 +37,18 @@ public class WidgetController {
     }
 
     /**
-     * Get all widgets.
+     * Get all widgets with optional filtering.
      *
-     * @return a list of all widgets
+     * @param name optional name filter (case-insensitive, partial match)
+     * @param description optional description filter (case-insensitive, partial match)
+     * @return a list of widgets matching the filters, or all widgets if no filters provided
      */
     @GetMapping
-    public ResponseEntity<List<WidgetDto>> getAllWidgets() {
-        List<WidgetDto> widgets = widgetService.getAllWidgets();
+    public ResponseEntity<List<WidgetDto>> getAllWidgets(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String description) {
+
+        List<WidgetDto> widgets = widgetService.findWidgets(name, description);
         return ResponseEntity.ok(widgets);
     }
 
@@ -74,27 +79,4 @@ public class WidgetController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    /**
-     * Find widgets by name (case-insensitive, partial match).
-     *
-     * @param name the name to search for
-     * @return a list of widgets matching the name
-     */
-    @GetMapping("/search/byName")
-    public ResponseEntity<List<WidgetDto>> findWidgetsByName(@RequestParam String name) {
-        List<WidgetDto> widgets = widgetService.findWidgetsByName(name);
-        return ResponseEntity.ok(widgets);
-    }
-
-    /**
-     * Find widgets by description (case-insensitive, partial match).
-     *
-     * @param description the description to search for
-     * @return a list of widgets matching the description
-     */
-    @GetMapping("/search/byDescription")
-    public ResponseEntity<List<WidgetDto>> findWidgetsByDescription(@RequestParam String description) {
-        List<WidgetDto> widgets = widgetService.findWidgetsByDescription(description);
-        return ResponseEntity.ok(widgets);
-    }
 }

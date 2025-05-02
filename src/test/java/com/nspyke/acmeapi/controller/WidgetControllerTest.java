@@ -61,17 +61,66 @@ public class WidgetControllerTest {
     }
 
     @Test
-    public void testGetAllWidgets() {
+    public void testGetAllWidgets_NoFilters() {
         // Arrange
-        when(widgetService.getAllWidgets()).thenReturn(testWidgets);
+        when(widgetService.findWidgets(null, null)).thenReturn(testWidgets);
 
         // Act
-        ResponseEntity<List<WidgetDto>> response = widgetController.getAllWidgets();
+        ResponseEntity<List<WidgetDto>> response = widgetController.getAllWidgets(null, null);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals(2, response.getBody().size());
+    }
+
+    @Test
+    public void testGetAllWidgets_FilterByName() {
+        // Arrange
+        List<WidgetDto> filteredWidgets = List.of(testWidget);
+        when(widgetService.findWidgets("Test", null)).thenReturn(filteredWidgets);
+
+        // Act
+        ResponseEntity<List<WidgetDto>> response = widgetController.getAllWidgets("Test", null);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals("Test Widget", response.getBody().get(0).name());
+    }
+
+    @Test
+    public void testGetAllWidgets_FilterByDescription() {
+        // Arrange
+        List<WidgetDto> filteredWidgets = List.of(testWidget);
+        when(widgetService.findWidgets(null, "test")).thenReturn(filteredWidgets);
+
+        // Act
+        ResponseEntity<List<WidgetDto>> response = widgetController.getAllWidgets(null, "test");
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals("A test widget", response.getBody().get(0).description());
+    }
+
+    @Test
+    public void testGetAllWidgets_FilterByNameAndDescription() {
+        // Arrange
+        List<WidgetDto> filteredWidgets = List.of(testWidget);
+        when(widgetService.findWidgets("Test", "test")).thenReturn(filteredWidgets);
+
+        // Act
+        ResponseEntity<List<WidgetDto>> response = widgetController.getAllWidgets("Test", "test");
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals("Test Widget", response.getBody().get(0).name());
+        assertEquals("A test widget", response.getBody().get(0).description());
     }
 
     @Test

@@ -43,18 +43,11 @@ public interface WidgetService {
     Optional<WidgetDto> updateWidget(Long id, WidgetDto widgetDto);
 
     /**
-     * Find widgets by name (case-insensitive, partial match).
+     * Find widgets based on optional filter parameters.
      *
-     * @param name the name to search for
-     * @return a list of widgets matching the name
+     * @param name optional name filter
+     * @param description optional description filter
+     * @return list of widgets matching the query criteria
      */
-    List<WidgetDto> findWidgetsByName(String name);
-
-    /**
-     * Find widgets by description (case-insensitive, partial match).
-     *
-     * @param description the description to search for
-     * @return a list of widgets matching the description
-     */
-    List<WidgetDto> findWidgetsByDescription(String description);
+    List<WidgetDto> findWidgets(String name, String description);
 }

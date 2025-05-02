@@ -61,15 +61,34 @@ public class WidgetServiceImpl implements WidgetService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<WidgetDto> findWidgetsByName(String name) {
+    public List<WidgetDto> findWidgets(String name, String description) {
+        boolean hasName = name != null;
+        boolean hasDescription = description != null;
+
+        if (hasName && hasDescription) {
+            return findWidgetsByNameAndDescription(name, description);
+        }
+        if (hasName) {
+            return findWidgetsByName(name);
+        }
+        if (hasDescription) {
+            return findWidgetsByDescription(description);
+        }
+        return getAllWidgets();
+    }
+
+    private List<WidgetDto> findWidgetsByName(String name) {
         List<Widget> widgets = widgetRepository.findByNameContainingIgnoreCase(name);
         return widgetMapper.toDtoList(widgets);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<WidgetDto> findWidgetsByDescription(String description) {
+    private List<WidgetDto> findWidgetsByDescription(String description) {
         List<Widget> widgets = widgetRepository.findByDescriptionContainingIgnoreCase(description);
+        return widgetMapper.toDtoList(widgets);
+    }
+
+    private List<WidgetDto> findWidgetsByNameAndDescription(String name, String description) {
+        List<Widget> widgets = widgetRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(name, description);
         return widgetMapper.toDtoList(widgets);
     }
 }

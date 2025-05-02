@@ -28,8 +28,21 @@ paths:
           $ref: '#/components/responses/ServerErrorResponse'
     get:
       summary: Get all widgets
-      description: Returns a list of all widgets
+      description: Returns a list of all widgets with optional filtering
       operationId: getAllWidgets
+      parameters:
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter widgets by name (case-insensitive, partial match)
+        - name: description
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Filter widgets by description (case-insensitive, partial match)
       responses:
         '200':
           $ref: '#/components/responses/WidgetListResponse'
@@ -82,49 +95,6 @@ paths:
         '500':
           $ref: '#/components/responses/ServerErrorResponse'
 
-  /api/v1/widgets/search/byName:
-    get:
-      summary: Find widgets by name
-      description: Returns widgets with names containing the search term (case-insensitive)
-      operationId: findWidgetsByName
-      parameters:
-        - name: name
-          in: query
-          required: true
-          schema:
-            type: string
-          description: The name to search for
-      responses:
-        '200':
-          $ref: '#/components/responses/WidgetListResponse'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntityResponse'
-        '500':
-          $ref: '#/components/responses/ServerErrorResponse'
-
-  /api/v1/widgets/search/byDescription:
-    get:
-      summary: Find widgets by description
-      description: Returns widgets with descriptions containing the search term (case-insensitive)
-      operationId: findWidgetsByDescription
-      parameters:
-        - name: description
-          in: query
-          required: true
-          schema:
-            type: string
-          description: The description to search for
-      responses:
-        '200':
-          $ref: '#/components/responses/WidgetListResponse'
-        '400':
-          $ref: '#/components/responses/BadRequestResponse'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntityResponse'
-        '500':
-          $ref: '#/components/responses/ServerErrorResponse'
 
 components:
   schemas:

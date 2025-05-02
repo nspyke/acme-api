@@ -12,7 +12,7 @@ import java.util.List;
  */
 @Repository
 public interface WidgetRepository extends JpaRepository<Widget, Long> {
-    
+
     /**
      * Find widgets by name containing the given string (case-insensitive).
      *
@@ -20,7 +20,7 @@ public interface WidgetRepository extends JpaRepository<Widget, Long> {
      * @return a list of widgets with names containing the given string
      */
     List<Widget> findByNameContainingIgnoreCase(String name);
-    
+
     /**
      * Find widgets by description containing the given string (case-insensitive).
      *
@@ -28,4 +28,13 @@ public interface WidgetRepository extends JpaRepository<Widget, Long> {
      * @return a list of widgets with descriptions containing the given string
      */
     List<Widget> findByDescriptionContainingIgnoreCase(String description);
+
+    /**
+     * Find widgets by name and description containing the given strings (case-insensitive).
+     *
+     * @param name the name to search for
+     * @param description the description to search for
+     * @return a list of widgets with names and descriptions containing the given strings
+     */
+    List<Widget> findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(String name, String description);
 }
