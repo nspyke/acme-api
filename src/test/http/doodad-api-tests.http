@@ -12,6 +12,9 @@ Content-Type: application/json
 ### Get all doodads
 GET http://localhost:8080/api/v1/doodads
 
+### Get all doodads
+GET http://localhost:8080/api/v1/doodads?page=1&size=10
+
 ### Get doodad by ID (replace 1 with an actual ID after creating)
 GET http://localhost:8080/api/v1/doodads/1
 

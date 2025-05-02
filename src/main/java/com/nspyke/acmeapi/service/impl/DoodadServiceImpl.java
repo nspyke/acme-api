@@ -2,12 +2,16 @@ package com.nspyke.acmeapi.service.impl;
 
 import com.nspyke.acmeapi.mapper.DoodadMapper;
 import com.nspyke.acmeapi.model.dto.DoodadDto;
+import com.nspyke.acmeapi.model.dto.PageResponse;
 import com.nspyke.acmeapi.model.entity.Doodad;
 import com.nspyke.acmeapi.repository.DoodadRepository;
 import com.nspyke.acmeapi.service.DoodadService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,35 +64,33 @@ public class DoodadServiceImpl implements DoodadService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DoodadDto> findDoodads(String name, String description) {
+    public PageResponse<DoodadDto> findDoodadsPaginated(String name, String description, int page, int size) {
+        // Limit page size to 100
+        int pageSize = Math.min(size, 100);
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Doodad> doodadPage;
+
         boolean hasName = name != null;
         boolean hasDescription = description != null;
 
         if (hasName && hasDescription) {
-            return findDoodadsByNameAndDescription(name, description);
+            doodadPage = doodadRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(
+                    name, description, pageable);
+        } else if (hasName) {
+            doodadPage = doodadRepository.findByNameContainingIgnoreCase(name, pageable);
+        } else if (hasDescription) {
+            doodadPage = doodadRepository.findByDescriptionContainingIgnoreCase(description, pageable);
+        } else {
+            doodadPage = doodadRepository.findAll(pageable);
         }
-        if (hasName) {
-            return findDoodadsByName(name);
-        }
-        if (hasDescription) {
-            return findDoodadsByDescription(description);
-        }
-        return getAllDoodads();
-    }
 
-    private List<DoodadDto> findDoodadsByName(String name) {
-        List<Doodad> doodads = doodadRepository.findByNameContainingIgnoreCase(name);
-        return doodadMapper.toDtoList(doodads);
-    }
+        List<DoodadDto> doodadDtos = doodadMapper.toDtoList(doodadPage.getContent());
+        PageResponse.PageInfo pageInfo = new PageResponse.PageInfo(
+                doodadPage.getNumber(),
+                doodadPage.getSize(),
+                doodadPage.getTotalPages(),
+                doodadPage.getTotalElements());
 
-    private List<DoodadDto> findDoodadsByDescription(String description) {
-        List<Doodad> doodads = doodadRepository.findByDescriptionContainingIgnoreCase(description);
-        return doodadMapper.toDtoList(doodads);
-    }
-
-    private List<DoodadDto> findDoodadsByNameAndDescription(String name, String description) {
-        List<Doodad> doodads =
-                doodadRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(name, description);
-        return doodadMapper.toDtoList(doodads);
+        return new PageResponse<>(doodadDtos, pageInfo);
     }
 }

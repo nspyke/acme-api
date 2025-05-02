@@ -1,6 +1,7 @@
 package com.nspyke.acmeapi.service.impl;
 
 import com.nspyke.acmeapi.mapper.WidgetMapper;
+import com.nspyke.acmeapi.model.dto.PageResponse;
 import com.nspyke.acmeapi.model.dto.WidgetDto;
 import com.nspyke.acmeapi.model.entity.Widget;
 import com.nspyke.acmeapi.repository.WidgetRepository;
@@ -8,6 +9,9 @@ import com.nspyke.acmeapi.service.WidgetService;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,35 +64,33 @@ public class WidgetServiceImpl implements WidgetService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<WidgetDto> findWidgets(String name, String description) {
+    public PageResponse<WidgetDto> findWidgetsPaginated(String name, String description, int page, int size) {
+        // Limit page size to 100
+        int pageSize = Math.min(size, 100);
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Widget> widgetPage;
+
         boolean hasName = name != null;
         boolean hasDescription = description != null;
 
         if (hasName && hasDescription) {
-            return findWidgetsByNameAndDescription(name, description);
+            widgetPage = widgetRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(
+                    name, description, pageable);
+        } else if (hasName) {
+            widgetPage = widgetRepository.findByNameContainingIgnoreCase(name, pageable);
+        } else if (hasDescription) {
+            widgetPage = widgetRepository.findByDescriptionContainingIgnoreCase(description, pageable);
+        } else {
+            widgetPage = widgetRepository.findAll(pageable);
         }
-        if (hasName) {
-            return findWidgetsByName(name);
-        }
-        if (hasDescription) {
-            return findWidgetsByDescription(description);
-        }
-        return getAllWidgets();
-    }
 
-    private List<WidgetDto> findWidgetsByName(String name) {
-        List<Widget> widgets = widgetRepository.findByNameContainingIgnoreCase(name);
-        return widgetMapper.toDtoList(widgets);
-    }
+        List<WidgetDto> widgetDtos = widgetMapper.toDtoList(widgetPage.getContent());
+        PageResponse.PageInfo pageInfo = new PageResponse.PageInfo(
+                widgetPage.getNumber(),
+                widgetPage.getSize(),
+                widgetPage.getTotalPages(),
+                widgetPage.getTotalElements());
 
-    private List<WidgetDto> findWidgetsByDescription(String description) {
-        List<Widget> widgets = widgetRepository.findByDescriptionContainingIgnoreCase(description);
-        return widgetMapper.toDtoList(widgets);
-    }
-
-    private List<WidgetDto> findWidgetsByNameAndDescription(String name, String description) {
-        List<Widget> widgets =
-                widgetRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(name, description);
-        return widgetMapper.toDtoList(widgets);
+        return new PageResponse<>(widgetDtos, pageInfo);
     }
 }

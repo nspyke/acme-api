@@ -28,7 +28,7 @@ paths:
           $ref: '#/components/responses/ServerErrorResponse'
     get:
       summary: Get all doodads
-      description: Returns a list of all doodads with optional filtering
+      description: Returns a paginated list of all doodads with optional filtering
       operationId: getAllDoodads
       parameters:
         - name: name
@@ -43,9 +43,26 @@ paths:
           schema:
             type: string
           description: Filter doodads by description (case-insensitive, partial match)
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+          description: Page number (0-based)
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+          description: Page size (default 10, max 100)
       responses:
         '200':
-          $ref: '#/components/responses/DoodadListResponse'
+          $ref: '#/components/responses/DoodadPageResponse'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
         '422':
@@ -113,7 +130,7 @@ paths:
           $ref: '#/components/responses/ServerErrorResponse'
     get:
       summary: Get all widgets
-      description: Returns a list of all widgets with optional filtering
+      description: Returns a paginated list of all widgets with optional filtering
       operationId: getAllWidgets
       parameters:
         - name: name
@@ -128,9 +145,26 @@ paths:
           schema:
             type: string
           description: Filter widgets by description (case-insensitive, partial match)
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
+            minimum: 0
+          description: Page number (0-based)
+        - name: size
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 10
+            minimum: 1
+            maximum: 100
+          description: Page size (default 10, max 100)
       responses:
         '200':
-          $ref: '#/components/responses/WidgetListResponse'
+          $ref: '#/components/responses/WidgetPageResponse'
         '400':
           $ref: '#/components/responses/BadRequestResponse'
         '422':
@@ -183,6 +217,50 @@ paths:
 
 components:
   schemas:
+    PageInfo:
+      type: object
+      description: Information about a page of results
+      properties:
+        number:
+          type: integer
+          description: The current page number (0-based)
+        size:
+          type: integer
+          description: The size of the page
+        totalPages:
+          type: integer
+          description: The total number of pages
+        totalElements:
+          type: integer
+          format: int64
+          description: The total number of elements across all pages
+
+    DoodadPageResponse:
+      type: object
+      description: A paginated response containing doodads
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/DoodadDto'
+          description: The list of doodads in the current page
+        page:
+          $ref: '#/components/schemas/PageInfo'
+          description: Pagination information
+
+    WidgetPageResponse:
+      type: object
+      description: A paginated response containing widgets
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/WidgetDto'
+          description: The list of widgets in the current page
+        page:
+          $ref: '#/components/schemas/PageInfo'
+          description: Pagination information
+
     DoodadDto:
       type: object
       description: Data Transfer Object for Doodad entities
@@ -338,14 +416,12 @@ components:
           schema:
             $ref: '#/components/schemas/DoodadDto'
 
-    DoodadListResponse:
-      description: A list of doodads
+    DoodadPageResponse:
+      description: A paginated list of doodads
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/DoodadDto'
+            $ref: '#/components/schemas/DoodadPageResponse'
 
     WidgetResponse:
       description: A single widget
@@ -354,14 +430,12 @@ components:
           schema:
             $ref: '#/components/schemas/WidgetDto'
 
-    WidgetListResponse:
-      description: A list of widgets
+    WidgetPageResponse:
+      description: A paginated list of widgets
       content:
         application/json:
           schema:
-            type: array
-            items:
-              $ref: '#/components/schemas/WidgetDto'
+            $ref: '#/components/schemas/WidgetPageResponse'
 
     BadRequestResponse:
       description: Bad request due to invalid input

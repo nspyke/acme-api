@@ -1,9 +1,9 @@
 package com.nspyke.acmeapi.controller;
 
 import com.nspyke.acmeapi.model.dto.DoodadDto;
+import com.nspyke.acmeapi.model.dto.PageResponse;
 import com.nspyke.acmeapi.service.DoodadService;
 import jakarta.validation.Valid;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,17 +36,22 @@ public class DoodadController {
     }
 
     /**
-     * Get all doodads with optional filtering.
+     * Get all doodads with optional filtering and pagination.
      *
      * @param name optional name filter (case-insensitive, partial match)
      * @param description optional description filter (case-insensitive, partial match)
-     * @return a list of doodads matching the filters, or all doodads if no filters provided
+     * @param page page number (0-based, defaults to 0)
+     * @param size page size (defaults to 10, max 100)
+     * @return a paginated response of doodads matching the filters
      */
     @GetMapping
-    public ResponseEntity<List<DoodadDto>> getAllDoodads(
-            @RequestParam(required = false) String name, @RequestParam(required = false) String description) {
+    public ResponseEntity<PageResponse<DoodadDto>> getAllDoodads(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String description,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
 
-        List<DoodadDto> doodads = doodadService.findDoodads(name, description);
+        PageResponse<DoodadDto> doodads = doodadService.findDoodadsPaginated(name, description, page, size);
         return ResponseEntity.ok(doodads);
     }
 

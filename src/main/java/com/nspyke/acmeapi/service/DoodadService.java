@@ -1,6 +1,7 @@
 package com.nspyke.acmeapi.service;
 
 import com.nspyke.acmeapi.model.dto.DoodadDto;
+import com.nspyke.acmeapi.model.dto.PageResponse;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,11 +43,13 @@ public interface DoodadService {
     Optional<DoodadDto> updateDoodad(Long id, DoodadDto doodadDto);
 
     /**
-     * Find doodads based on optional filter parameters.
+     * Find doodads based on optional filter parameters with pagination.
      *
      * @param name optional name filter
      * @param description optional description filter
-     * @return list of doodads matching the query criteria
+     * @param page page number (0-based)
+     * @param size page size
+     * @return paginated response of doodads matching the query criteria
      */
-    List<DoodadDto> findDoodads(String name, String description);
+    PageResponse<DoodadDto> findDoodadsPaginated(String name, String description, int page, int size);
 }
