@@ -1,0 +1,182 @@
+package com.nspyke.acmeapi.controller;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.when;
+
+import com.nspyke.acmeapi.model.dto.DoodadDto;
+import com.nspyke.acmeapi.service.DoodadService;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+/**
+ * Tests for the DoodadController class.
+ */
+public class DoodadControllerTest {
+
+    @Mock
+    private DoodadService doodadService;
+
+    @InjectMocks
+    private DoodadController doodadController;
+
+    private DoodadDto testDoodad;
+    private List<DoodadDto> testDoodads;
+
+    @BeforeEach
+    public void setup() {
+        MockitoAnnotations.openMocks(this);
+
+        // Create test data
+        testDoodad = new DoodadDto(1L, "Test Doodad", "A test doodad", "test-image.jpg", 10.99F);
+        DoodadDto doodad2 = new DoodadDto(2L, "Another Doodad", "Another test doodad", "another-image.jpg", 15.99F);
+        testDoodads = Arrays.asList(testDoodad, doodad2);
+    }
+
+    @Test
+    public void testCreateDoodad() {
+        // Arrange
+        DoodadDto inputDoodad = new DoodadDto("Test Doodad", "A test doodad", "test-image.jpg", 10.99F);
+        when(doodadService.createDoodad(any(DoodadDto.class))).thenReturn(testDoodad);
+
+        // Act
+        ResponseEntity<DoodadDto> response = doodadController.createDoodad(inputDoodad);
+
+        // Assert
+        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1L, response.getBody().id());
+        assertEquals("Test Doodad", response.getBody().name());
+        assertEquals(10.99F, response.getBody().price());
+    }
+
+    @Test
+    public void testGetAllDoodads_NoFilters() {
+        // Arrange
+        when(doodadService.findDoodads(null, null)).thenReturn(testDoodads);
+
+        // Act
+        ResponseEntity<List<DoodadDto>> response = doodadController.getAllDoodads(null, null);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(2, response.getBody().size());
+    }
+
+    @Test
+    public void testGetAllDoodads_FilterByName() {
+        // Arrange
+        List<DoodadDto> filteredDoodads = List.of(testDoodad);
+        when(doodadService.findDoodads("Test", null)).thenReturn(filteredDoodads);
+
+        // Act
+        ResponseEntity<List<DoodadDto>> response = doodadController.getAllDoodads("Test", null);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals("Test Doodad", response.getBody().get(0).name());
+    }
+
+    @Test
+    public void testGetAllDoodads_FilterByDescription() {
+        // Arrange
+        List<DoodadDto> filteredDoodads = List.of(testDoodad);
+        when(doodadService.findDoodads(null, "test")).thenReturn(filteredDoodads);
+
+        // Act
+        ResponseEntity<List<DoodadDto>> response = doodadController.getAllDoodads(null, "test");
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals("A test doodad", response.getBody().get(0).description());
+    }
+
+    @Test
+    public void testGetAllDoodads_FilterByNameAndDescription() {
+        // Arrange
+        List<DoodadDto> filteredDoodads = List.of(testDoodad);
+        when(doodadService.findDoodads("Test", "test")).thenReturn(filteredDoodads);
+
+        // Act
+        ResponseEntity<List<DoodadDto>> response = doodadController.getAllDoodads("Test", "test");
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1, response.getBody().size());
+        assertEquals("Test Doodad", response.getBody().get(0).name());
+        assertEquals("A test doodad", response.getBody().get(0).description());
+    }
+
+    @Test
+    public void testGetDoodadById_Found() {
+        // Arrange
+        when(doodadService.getDoodadById(1L)).thenReturn(Optional.of(testDoodad));
+
+        // Act
+        ResponseEntity<DoodadDto> response = doodadController.getDoodadById(1L);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals(1L, response.getBody().id());
+    }
+
+    @Test
+    public void testGetDoodadById_NotFound() {
+        // Arrange
+        when(doodadService.getDoodadById(anyLong())).thenReturn(Optional.empty());
+
+        // Act
+        ResponseEntity<DoodadDto> response = doodadController.getDoodadById(999L);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void testUpdateDoodad_Found() {
+        // Arrange
+        DoodadDto updatedDoodad =
+                new DoodadDto(1L, "Updated Doodad", "An updated test doodad", "updated-image.jpg", 12.99F);
+        when(doodadService.updateDoodad(anyLong(), any(DoodadDto.class))).thenReturn(Optional.of(updatedDoodad));
+
+        // Act
+        ResponseEntity<DoodadDto> response = doodadController.updateDoodad(1L, updatedDoodad);
+
+        // Assert
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+        assertEquals("Updated Doodad", response.getBody().name());
+        assertEquals(12.99F, response.getBody().price());
+    }
+
+    @Test
+    public void testUpdateDoodad_NotFound() {
+        // Arrange
+        DoodadDto updatedDoodad =
+                new DoodadDto(999L, "Updated Doodad", "An updated test doodad", "updated-image.jpg", 12.99F);
+        when(doodadService.updateDoodad(anyLong(), any(DoodadDto.class))).thenReturn(Optional.empty());
+
+        // Act
+        ResponseEntity<DoodadDto> response = doodadController.updateDoodad(999L, updatedDoodad);
+
+        // Assert
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+}
