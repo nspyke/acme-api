@@ -1,0 +1,36 @@
+### Create a new doodad
+POST http://localhost:8080/api/v1/doodads
+Content-Type: application/json
+
+{
+  "name": "Test Doodad",
+  "description": "A test doodad for API testing",
+  "image": "test-doodad.jpg",
+  "price": 19.99
+}
+
+### Get all doodads
+GET http://localhost:8080/api/v1/doodads
+
+### Get doodad by ID (replace 1 with an actual ID after creating)
+GET http://localhost:8080/api/v1/doodads/1
+
+### Update a doodad (replace 1 with an actual ID after creating)
+PUT http://localhost:8080/api/v1/doodads/1
+Content-Type: application/json
+
+{
+  "name": "Updated Test Doodad",
+  "description": "An updated test doodad",
+  "image": "updated-test-doodad.jpg",
+  "price": 29.99
+}
+
+### Filter doodads by name
+GET http://localhost:8080/api/v1/doodads?name=Test
+
+### Filter doodads by description
+GET http://localhost:8080/api/v1/doodads?description=test
+
+### Filter doodads by name and description
+GET http://localhost:8080/api/v1/doodads?name=Test&description=test
