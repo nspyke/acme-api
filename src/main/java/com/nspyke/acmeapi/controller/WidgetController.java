@@ -2,6 +2,7 @@ package com.nspyke.acmeapi.controller;
 
 import com.nspyke.acmeapi.model.dto.WidgetDto;
 import com.nspyke.acmeapi.service.WidgetService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class WidgetController {
      * @return the created widget with generated ID
      */
     @PostMapping
-    public ResponseEntity<WidgetDto> createWidget(@RequestBody WidgetDto widgetDto) {
+    public ResponseEntity<WidgetDto> createWidget(@Valid @RequestBody WidgetDto widgetDto) {
         WidgetDto createdWidget = widgetService.createWidget(widgetDto);
         return new ResponseEntity<>(createdWidget, HttpStatus.CREATED);
     }
@@ -67,7 +68,7 @@ public class WidgetController {
      * @return the updated widget if found, or 404 Not Found
      */
     @PutMapping("/{id}")
-    public ResponseEntity<WidgetDto> updateWidget(@PathVariable Long id, @RequestBody WidgetDto widgetDto) {
+    public ResponseEntity<WidgetDto> updateWidget(@PathVariable Long id, @Valid @RequestBody WidgetDto widgetDto) {
         return widgetService.updateWidget(id, widgetDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
