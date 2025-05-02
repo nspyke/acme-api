@@ -24,12 +24,6 @@ Content-Type: application/json
   "image": "updated-widget.jpg"
 }
 
-### Search widgets by name
-GET http://localhost:8080/api/v1/widgets/search/byName?name=Test
-
-### Search widgets by description
-GET http://localhost:8080/api/v1/widgets/search/byDescription?description=test
-
 ### Create a widget with missing name (should fail validation)
 POST http://localhost:8080/api/v1/widgets
 Content-Type: application/json
@@ -65,3 +59,12 @@ Content-Type: application/json
   "description": "This updated widget has a missing name",
   "image": "missing-name-update.jpg"
 }
+
+### Search widgets by name
+GET http://localhost:8080/api/v1/widgets?name=updated
+
+### Search widgets by description
+GET http://localhost:8080/api/v1/widgets?description=test
+
+### Search widgets by both name and description
+GET http://localhost:8080/api/v1/widgets?name=Test&description=updated

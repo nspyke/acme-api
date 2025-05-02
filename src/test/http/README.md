@@ -29,19 +29,20 @@ The application will start on port 8080 by default.
 
 The `widget-api-tests.http` file contains requests for testing all the Widget API endpoints:
 
-1. **Create a new widget** - POST request to `/api/widgets`
-2. **Get all widgets** - GET request to `/api/widgets`
-3. **Get widget by ID** - GET request to `/api/widgets/{id}` (replace `{id}` with an actual ID)
-4. **Update a widget** - PUT request to `/api/widgets/{id}` (replace `{id}` with an actual ID)
-5. **Search widgets by name** - GET request to `/api/widgets/search/byName?name={name}`
-6. **Search widgets by description** - GET request to `/api/widgets/search/byDescription?description={description}`
+1. **Create a new widget** - POST request to `/api/v1/widgets`
+2. **Get all widgets** - GET request to `/api/v1/widgets`
+3. **Get widget by ID** - GET request to `/api/v1/widgets/{id}` (replace `{id}` with an actual ID)
+4. **Update a widget** - PUT request to `/api/v1/widgets/{id}` (replace `{id}` with an actual ID)
+5. **Search widgets by name** - GET request to `/api/v1/widgets?name={name}`
+6. **Search widgets by description** - GET request to `/api/v1/widgets?description={description}`
+7. **Search widgets by name and description** - GET request to `/api/v1/widgets?name={name}&description={description}`
 
 ### Advanced Tests
 
 The `widget-api-advanced-tests.http` file contains more complex testing scenarios:
 
 1. **Create multiple widgets** - Creates three different widgets with varying data
-2. **Test search functionality** - Tests the search endpoints with different parameters
+2. **Test search functionality** - Tests searching widgets using query parameters on the getAll endpoint
 3. **Update and verify** - Updates a widget and verifies the changes
 4. **Search updated data** - Tests search functionality with the updated data
 
@@ -54,8 +55,9 @@ For best results, execute the requests in the following order:
 3. Get the widget by ID (GET) using the ID from the previous response
 4. Update the widget (PUT) using the same ID
 5. Get all widgets again to verify the update
-6. Search widgets by name
-7. Search widgets by description
+6. Search widgets by name using query parameters
+7. Search widgets by description using query parameters
+8. Search widgets by both name and description using query parameters
 
 ### Using IntelliJ IDEA's HTTP Client
 
