@@ -7,6 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import com.nspyke.acmeapi.model.dto.DoodadDto;
+import com.nspyke.acmeapi.model.dto.DoodadSearchCriteria;
 import com.nspyke.acmeapi.model.dto.PagedResponse;
 import com.nspyke.acmeapi.service.DoodadService;
 import java.util.Arrays;
@@ -64,12 +65,13 @@ public class DoodadControllerTest {
     @Test
     public void testGetAllDoodads_NoFilters() {
         // Arrange
+        DoodadSearchCriteria criteria = new DoodadSearchCriteria(null, null, 0, 10);
         PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 2);
         PagedResponse<DoodadDto> pagedResponse = new PagedResponse<>(testDoodads, pageInfo);
-        when(doodadService.findDoodadsPaginated(null, null, 0, 10)).thenReturn(pagedResponse);
+        when(doodadService.findDoodadsPaginated(criteria)).thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PagedResponse<DoodadDto>> response = doodadController.getAllDoodads(null, null, 0, 10);
+        ResponseEntity<PagedResponse<DoodadDto>> response = doodadController.getAllDoodads(criteria);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -84,13 +86,14 @@ public class DoodadControllerTest {
     @Test
     public void testGetAllDoodads_FilterByName() {
         // Arrange
+        DoodadSearchCriteria criteria = new DoodadSearchCriteria("Test", null, 0, 10);
         List<DoodadDto> filteredDoodads = List.of(testDoodad);
         PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 1);
         PagedResponse<DoodadDto> pagedResponse = new PagedResponse<>(filteredDoodads, pageInfo);
-        when(doodadService.findDoodadsPaginated("Test", null, 0, 10)).thenReturn(pagedResponse);
+        when(doodadService.findDoodadsPaginated(criteria)).thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PagedResponse<DoodadDto>> response = doodadController.getAllDoodads("Test", null, 0, 10);
+        ResponseEntity<PagedResponse<DoodadDto>> response = doodadController.getAllDoodads(criteria);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -104,13 +107,14 @@ public class DoodadControllerTest {
     @Test
     public void testGetAllDoodads_FilterByDescription() {
         // Arrange
+        DoodadSearchCriteria criteria = new DoodadSearchCriteria(null, "test", 0, 10);
         List<DoodadDto> filteredDoodads = List.of(testDoodad);
         PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 1);
         PagedResponse<DoodadDto> pagedResponse = new PagedResponse<>(filteredDoodads, pageInfo);
-        when(doodadService.findDoodadsPaginated(null, "test", 0, 10)).thenReturn(pagedResponse);
+        when(doodadService.findDoodadsPaginated(criteria)).thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PagedResponse<DoodadDto>> response = doodadController.getAllDoodads(null, "test", 0, 10);
+        ResponseEntity<PagedResponse<DoodadDto>> response = doodadController.getAllDoodads(criteria);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -123,13 +127,14 @@ public class DoodadControllerTest {
     @Test
     public void testGetAllDoodads_FilterByNameAndDescription() {
         // Arrange
+        DoodadSearchCriteria criteria = new DoodadSearchCriteria("Test", "test", 0, 10);
         List<DoodadDto> filteredDoodads = List.of(testDoodad);
         PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 1);
         PagedResponse<DoodadDto> pagedResponse = new PagedResponse<>(filteredDoodads, pageInfo);
-        when(doodadService.findDoodadsPaginated("Test", "test", 0, 10)).thenReturn(pagedResponse);
+        when(doodadService.findDoodadsPaginated(criteria)).thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PagedResponse<DoodadDto>> response = doodadController.getAllDoodads("Test", "test", 0, 10);
+        ResponseEntity<PagedResponse<DoodadDto>> response = doodadController.getAllDoodads(criteria);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -143,12 +148,13 @@ public class DoodadControllerTest {
     @Test
     public void testGetAllDoodads_WithPagination() {
         // Arrange
+        DoodadSearchCriteria criteria = new DoodadSearchCriteria(null, null, 1, 1);
         PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(1, 1, 2, 2);
         PagedResponse<DoodadDto> pagedResponse = new PagedResponse<>(List.of(testDoodads.get(1)), pageInfo);
-        when(doodadService.findDoodadsPaginated(null, null, 1, 1)).thenReturn(pagedResponse);
+        when(doodadService.findDoodadsPaginated(criteria)).thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PagedResponse<DoodadDto>> response = doodadController.getAllDoodads(null, null, 1, 1);
+        ResponseEntity<PagedResponse<DoodadDto>> response = doodadController.getAllDoodads(criteria);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());

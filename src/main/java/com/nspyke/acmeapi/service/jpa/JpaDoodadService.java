@@ -2,6 +2,7 @@ package com.nspyke.acmeapi.service.jpa;
 
 import com.nspyke.acmeapi.mapper.DoodadMapper;
 import com.nspyke.acmeapi.model.dto.DoodadDto;
+import com.nspyke.acmeapi.model.dto.DoodadSearchCriteria;
 import com.nspyke.acmeapi.model.dto.PagedResponse;
 import com.nspyke.acmeapi.model.entity.Doodad;
 import com.nspyke.acmeapi.repository.DoodadRepository;
@@ -59,14 +60,14 @@ public class JpaDoodadService implements DoodadService {
 
     @Override
     @Transactional(readOnly = true)
-    public PagedResponse<DoodadDto> findDoodadsPaginated(String name, String description, int page, int size) {
+    public PagedResponse<DoodadDto> findDoodadsPaginated(DoodadSearchCriteria criteria) {
         // Limit page size to 100
-        int pageSize = Math.min(size, 100);
-        Pageable pageable = PageRequest.of(page, pageSize);
+        int pageSize = Math.min(criteria.getSize(), 100);
+        Pageable pageable = PageRequest.of(criteria.getPage(), pageSize);
 
         // Create specifications for name and description filters
-        Specification<Doodad> nameSpec = DoodadSpecifications.nameLike(name);
-        Specification<Doodad> descSpec = DoodadSpecifications.descriptionLike(description);
+        Specification<Doodad> nameSpec = DoodadSpecifications.nameLike(criteria.getName());
+        Specification<Doodad> descSpec = DoodadSpecifications.descriptionLike(criteria.getDescription());
 
         // Combine specifications if both filters are provided
         Specification<Doodad> spec = Specification.where(null);
