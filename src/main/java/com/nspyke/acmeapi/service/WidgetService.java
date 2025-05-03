@@ -2,6 +2,8 @@ package com.nspyke.acmeapi.service;
 
 import com.nspyke.acmeapi.model.dto.PagedResponse;
 import com.nspyke.acmeapi.model.dto.WidgetDto;
+import com.nspyke.acmeapi.model.dto.WidgetSearchCriteria;
+
 import java.util.Optional;
 
 /**
@@ -37,11 +39,8 @@ public interface WidgetService {
     /**
      * Find widgets based on optional filter parameters with pagination.
      *
-     * @param name optional name filter
-     * @param description optional description filter
-     * @param page page number (0-based)
-     * @param size page size
+     * @param criteria optional widget search criteria (name, description, page, size)
      * @return paginated response of widgets matching the query criteria
      */
-    PagedResponse<WidgetDto> findWidgetsPaginated(String name, String description, int page, int size);
+    PagedResponse<WidgetDto> findWidgetsPaginated(WidgetSearchCriteria criteria);
 }

@@ -2,6 +2,7 @@ package com.nspyke.acmeapi.controller;
 
 import com.nspyke.acmeapi.model.dto.PagedResponse;
 import com.nspyke.acmeapi.model.dto.WidgetDto;
+import com.nspyke.acmeapi.model.dto.WidgetSearchCriteria;
 import com.nspyke.acmeapi.service.WidgetService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,19 +39,11 @@ public class WidgetController {
     /**
      * Get all widgets with optional filtering and pagination.
      *
-     * @param name optional name filter (case-insensitive, partial match)
-     * @param description optional description filter (case-insensitive, partial match)
-     * @param page page number (0-based, defaults to 0)
-     * @param size page size (defaults to 10, max 100)
      * @return a paginated response of widgets matching the filters
      */
     @GetMapping
-    public ResponseEntity<PagedResponse<WidgetDto>> getAllWidgets(
-            @RequestParam(required = false) String name,
-            @RequestParam(required = false) String description,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        PagedResponse<WidgetDto> widgets = widgetService.findWidgetsPaginated(name, description, page, size);
+    public ResponseEntity<PagedResponse<WidgetDto>> getAllWidgets(@ModelAttribute WidgetSearchCriteria criteria) {
+        PagedResponse<WidgetDto> widgets = widgetService.findWidgetsPaginated(criteria);
         return ResponseEntity.ok(widgets);
     }
 

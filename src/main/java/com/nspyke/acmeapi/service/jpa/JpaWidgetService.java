@@ -3,6 +3,7 @@ package com.nspyke.acmeapi.service.jpa;
 import com.nspyke.acmeapi.mapper.WidgetMapper;
 import com.nspyke.acmeapi.model.dto.PagedResponse;
 import com.nspyke.acmeapi.model.dto.WidgetDto;
+import com.nspyke.acmeapi.model.dto.WidgetSearchCriteria;
 import com.nspyke.acmeapi.model.entity.Widget;
 import com.nspyke.acmeapi.repository.WidgetRepository;
 import com.nspyke.acmeapi.repository.WidgetSpecifications;
@@ -59,24 +60,20 @@ public class JpaWidgetService implements WidgetService {
 
     @Override
     @Transactional(readOnly = true)
-    public PagedResponse<WidgetDto> findWidgetsPaginated(String name, String description, int page, int size) {
+    public PagedResponse<WidgetDto> findWidgetsPaginated(WidgetSearchCriteria criteria) {
         // Limit page size to 100
-        int pageSize = Math.min(size, 100);
-        Pageable pageable = PageRequest.of(page, pageSize);
-
-        // Create specifications for name and description filters
-        Specification<Widget> nameSpec = WidgetSpecifications.nameLike(name);
-        Specification<Widget> descSpec = WidgetSpecifications.descriptionLike(description);
+        int pageSize = Math.min(criteria.getSize(), 100);
+        Pageable pageable = PageRequest.of(criteria.getPage(), pageSize);
 
         // Combine specifications if both filters are provided
         Specification<Widget> spec = Specification.where(null);
 
-        if (nameSpec != null) {
-            spec = spec.and(nameSpec);
+        if (criteria.getName() != null) {
+            spec = spec.and(WidgetSpecifications.nameLike(criteria.getName()));
         }
 
-        if (descSpec != null) {
-            spec = spec.and(descSpec);
+        if (criteria.getDescription() != null) {
+            spec = spec.and(WidgetSpecifications.descriptionLike(criteria.getDescription()));
         }
 
         // Find all widgets with specifications
