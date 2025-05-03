@@ -132,3 +132,14 @@ The project uses Spotless with the Palantir Java formatter. To format the code:
 ```bash
 ./gradlew test
 ```
+
+## Continuous Integration
+
+This project uses GitHub Actions for continuous integration. The CI workflow automatically builds and tests the application on all branches.
+
+The workflow includes:
+- Building the application
+- Running all tests
+- Uploading test results as artifacts
+
+You can view the CI workflow configuration in the `.github/workflows/ci.yml` file.
