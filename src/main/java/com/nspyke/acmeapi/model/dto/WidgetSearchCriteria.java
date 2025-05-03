@@ -2,8 +2,8 @@ package com.nspyke.acmeapi.model.dto;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
-import org.springframework.lang.Nullable;
 import java.util.Objects;
+import org.springframework.lang.Nullable;
 
 public final class WidgetSearchCriteria {
     @Nullable
@@ -19,8 +19,7 @@ public final class WidgetSearchCriteria {
     @Max(100)
     private int size = 10;
 
-    public WidgetSearchCriteria() {
-    }
+    public WidgetSearchCriteria() {}
 
     public WidgetSearchCriteria(@Nullable String name, @Nullable String description, int page, int size) {
         this.name = name;
@@ -68,10 +67,10 @@ public final class WidgetSearchCriteria {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         WidgetSearchCriteria that = (WidgetSearchCriteria) o;
-        return page == that.page &&
-               size == that.size &&
-               Objects.equals(name, that.name) &&
-               Objects.equals(description, that.description);
+        return page == that.page
+                && size == that.size
+                && Objects.equals(name, that.name)
+                && Objects.equals(description, that.description);
     }
 
     @Override

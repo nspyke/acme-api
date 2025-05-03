@@ -10,5 +10,4 @@ import org.springframework.stereotype.Repository;
  * Provides CRUD operations for Widget entities.
  */
 @Repository
-public interface WidgetRepository extends JpaRepository<Widget, Long>, JpaSpecificationExecutor<Widget> {
-}
+public interface WidgetRepository extends JpaRepository<Widget, Long>, JpaSpecificationExecutor<Widget> {}

@@ -3,7 +3,6 @@ package com.nspyke.acmeapi.service;
 import com.nspyke.acmeapi.model.dto.PagedResponse;
 import com.nspyke.acmeapi.model.dto.WidgetDto;
 import com.nspyke.acmeapi.model.dto.WidgetSearchCriteria;
-
 import java.util.Optional;
 
 /**

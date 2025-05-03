@@ -10,5 +10,4 @@ import org.springframework.stereotype.Repository;
  * Provides CRUD operations and custom query methods for Doodad entities.
  */
 @Repository
-public interface DoodadRepository extends JpaRepository<Doodad, Long>, JpaSpecificationExecutor<Doodad> {
-}
+public interface DoodadRepository extends JpaRepository<Doodad, Long>, JpaSpecificationExecutor<Doodad> {}

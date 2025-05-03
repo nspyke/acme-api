@@ -66,10 +66,12 @@ public class WidgetControllerTest {
         // Arrange
         PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 2);
         PagedResponse<WidgetDto> pagedResponse = new PagedResponse<>(testWidgets, pageInfo);
-        when(widgetService.findWidgetsPaginated(new WidgetSearchCriteria(null, null, 0, 10))).thenReturn(pagedResponse);
+        when(widgetService.findWidgetsPaginated(new WidgetSearchCriteria(null, null, 0, 10)))
+                .thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PagedResponse<WidgetDto>> response = widgetController.getAllWidgets(new WidgetSearchCriteria(null, null, 0, 10));
+        ResponseEntity<PagedResponse<WidgetDto>> response =
+                widgetController.getAllWidgets(new WidgetSearchCriteria(null, null, 0, 10));
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -87,10 +89,12 @@ public class WidgetControllerTest {
         List<WidgetDto> filteredWidgets = List.of(testWidget);
         PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 1);
         PagedResponse<WidgetDto> pagedResponse = new PagedResponse<>(filteredWidgets, pageInfo);
-        when(widgetService.findWidgetsPaginated(new WidgetSearchCriteria("Test", null, 0, 10))).thenReturn(pagedResponse);
+        when(widgetService.findWidgetsPaginated(new WidgetSearchCriteria("Test", null, 0, 10)))
+                .thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PagedResponse<WidgetDto>> response = widgetController.getAllWidgets(new WidgetSearchCriteria("Test", null, 0, 10));
+        ResponseEntity<PagedResponse<WidgetDto>> response =
+                widgetController.getAllWidgets(new WidgetSearchCriteria("Test", null, 0, 10));
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -107,10 +111,12 @@ public class WidgetControllerTest {
         List<WidgetDto> filteredWidgets = List.of(testWidget);
         PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 1);
         PagedResponse<WidgetDto> pagedResponse = new PagedResponse<>(filteredWidgets, pageInfo);
-        when(widgetService.findWidgetsPaginated(new WidgetSearchCriteria(null, "test", 0, 10))).thenReturn(pagedResponse);
+        when(widgetService.findWidgetsPaginated(new WidgetSearchCriteria(null, "test", 0, 10)))
+                .thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PagedResponse<WidgetDto>> response = widgetController.getAllWidgets(new WidgetSearchCriteria(null, "test", 0, 10));
+        ResponseEntity<PagedResponse<WidgetDto>> response =
+                widgetController.getAllWidgets(new WidgetSearchCriteria(null, "test", 0, 10));
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -126,10 +132,12 @@ public class WidgetControllerTest {
         List<WidgetDto> filteredWidgets = List.of(testWidget);
         PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 1);
         PagedResponse<WidgetDto> pagedResponse = new PagedResponse<>(filteredWidgets, pageInfo);
-        when(widgetService.findWidgetsPaginated(new WidgetSearchCriteria("Test", "test", 0, 10))).thenReturn(pagedResponse);
+        when(widgetService.findWidgetsPaginated(new WidgetSearchCriteria("Test", "test", 0, 10)))
+                .thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PagedResponse<WidgetDto>> response = widgetController.getAllWidgets(new WidgetSearchCriteria("Test", "test", 0, 10));
+        ResponseEntity<PagedResponse<WidgetDto>> response =
+                widgetController.getAllWidgets(new WidgetSearchCriteria("Test", "test", 0, 10));
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -145,10 +153,12 @@ public class WidgetControllerTest {
         // Arrange
         PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(1, 1, 2, 2);
         PagedResponse<WidgetDto> pagedResponse = new PagedResponse<>(List.of(testWidgets.get(1)), pageInfo);
-        when(widgetService.findWidgetsPaginated(new WidgetSearchCriteria(null, null, 1, 1))).thenReturn(pagedResponse);
+        when(widgetService.findWidgetsPaginated(new WidgetSearchCriteria(null, null, 1, 1)))
+                .thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PagedResponse<WidgetDto>> response = widgetController.getAllWidgets(new WidgetSearchCriteria(null, null, 1, 1));
+        ResponseEntity<PagedResponse<WidgetDto>> response =
+                widgetController.getAllWidgets(new WidgetSearchCriteria(null, null, 1, 1));
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());

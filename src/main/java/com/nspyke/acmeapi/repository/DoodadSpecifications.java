@@ -36,8 +36,7 @@ public class DoodadSpecifications {
         if (description == null) {
             return null;
         }
-        return (root, query, criteriaBuilder) ->
-                criteriaBuilder.like(
-                        criteriaBuilder.lower(root.get("description")), "%" + description.toLowerCase() + "%");
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(
+                criteriaBuilder.lower(root.get("description")), "%" + description.toLowerCase() + "%");
     }
 }
