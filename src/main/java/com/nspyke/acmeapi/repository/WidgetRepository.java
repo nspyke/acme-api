@@ -4,6 +4,7 @@ import com.nspyke.acmeapi.model.entity.Widget;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Repository;
  * Provides CRUD operations and custom query methods for Widget entities.
  */
 @Repository
-public interface WidgetRepository extends JpaRepository<Widget, Long> {
+public interface WidgetRepository extends JpaRepository<Widget, Long>, JpaSpecificationExecutor<Widget> {
     /**
      * Find widgets by name containing the given string (case-insensitive) with pagination.
      *

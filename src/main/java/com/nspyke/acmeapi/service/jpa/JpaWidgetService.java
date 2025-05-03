@@ -5,6 +5,7 @@ import com.nspyke.acmeapi.model.dto.PagedResponse;
 import com.nspyke.acmeapi.model.dto.WidgetDto;
 import com.nspyke.acmeapi.model.entity.Widget;
 import com.nspyke.acmeapi.repository.WidgetRepository;
+import com.nspyke.acmeapi.repository.WidgetSpecifications;
 import com.nspyke.acmeapi.service.WidgetService;
 import java.util.List;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,20 +63,24 @@ public class JpaWidgetService implements WidgetService {
         // Limit page size to 100
         int pageSize = Math.min(size, 100);
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Widget> widgetPage;
 
-        boolean hasName = name != null;
-        boolean hasDescription = description != null;
+        // Create specifications for name and description filters
+        Specification<Widget> nameSpec = WidgetSpecifications.nameLike(name);
+        Specification<Widget> descSpec = WidgetSpecifications.descriptionLike(description);
 
-        if (hasName && hasDescription) {
-            widgetPage = widgetRepository.findByNameAndDescription(name, description, pageable);
-        } else if (hasName) {
-            widgetPage = widgetRepository.findByName(name, pageable);
-        } else if (hasDescription) {
-            widgetPage = widgetRepository.findByDescription(description, pageable);
-        } else {
-            widgetPage = widgetRepository.findAll(pageable);
+        // Combine specifications if both filters are provided
+        Specification<Widget> spec = Specification.where(null);
+
+        if (nameSpec != null) {
+            spec = spec.and(nameSpec);
         }
+
+        if (descSpec != null) {
+            spec = spec.and(descSpec);
+        }
+
+        // Find all widgets with specifications
+        Page<Widget> widgetPage = widgetRepository.findAll(spec, pageable);
 
         List<WidgetDto> widgetDtos = widgetMapper.toDtoList(widgetPage.getContent());
         PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(
