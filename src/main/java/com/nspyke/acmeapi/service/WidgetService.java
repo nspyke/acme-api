@@ -1,8 +1,7 @@
 package com.nspyke.acmeapi.service;
 
-import com.nspyke.acmeapi.model.dto.PageResponse;
+import com.nspyke.acmeapi.model.dto.PagedResponse;
 import com.nspyke.acmeapi.model.dto.WidgetDto;
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -17,13 +16,6 @@ public interface WidgetService {
      * @return the created widget with generated ID
      */
     WidgetDto createWidget(WidgetDto widgetDto);
-
-    /**
-     * Get all widgets.
-     *
-     * @return a list of all widgets
-     */
-    List<WidgetDto> getAllWidgets();
 
     /**
      * Get a widget by its ID.
@@ -51,5 +43,5 @@ public interface WidgetService {
      * @param size page size
      * @return paginated response of widgets matching the query criteria
      */
-    PageResponse<WidgetDto> findWidgetsPaginated(String name, String description, int page, int size);
+    PagedResponse<WidgetDto> findWidgetsPaginated(String name, String description, int page, int size);
 }

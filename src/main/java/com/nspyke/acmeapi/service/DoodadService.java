@@ -1,8 +1,7 @@
 package com.nspyke.acmeapi.service;
 
 import com.nspyke.acmeapi.model.dto.DoodadDto;
-import com.nspyke.acmeapi.model.dto.PageResponse;
-import java.util.List;
+import com.nspyke.acmeapi.model.dto.PagedResponse;
 import java.util.Optional;
 
 /**
@@ -17,13 +16,6 @@ public interface DoodadService {
      * @return the created doodad with generated ID
      */
     DoodadDto createDoodad(DoodadDto doodadDto);
-
-    /**
-     * Get all doodads.
-     *
-     * @return a list of all doodads
-     */
-    List<DoodadDto> getAllDoodads();
 
     /**
      * Get a doodad by its ID.
@@ -51,5 +43,5 @@ public interface DoodadService {
      * @param size page size
      * @return paginated response of doodads matching the query criteria
      */
-    PageResponse<DoodadDto> findDoodadsPaginated(String name, String description, int page, int size);
+    PagedResponse<DoodadDto> findDoodadsPaginated(String name, String description, int page, int size);
 }

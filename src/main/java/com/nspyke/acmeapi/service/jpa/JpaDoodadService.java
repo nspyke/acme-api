@@ -1,10 +1,11 @@
-package com.nspyke.acmeapi.service.impl;
+package com.nspyke.acmeapi.service.jpa;
 
 import com.nspyke.acmeapi.mapper.DoodadMapper;
 import com.nspyke.acmeapi.model.dto.DoodadDto;
-import com.nspyke.acmeapi.model.dto.PageResponse;
+import com.nspyke.acmeapi.model.dto.PagedResponse;
 import com.nspyke.acmeapi.model.entity.Doodad;
 import com.nspyke.acmeapi.repository.DoodadRepository;
+import com.nspyke.acmeapi.repository.DoodadSpecifications;
 import com.nspyke.acmeapi.service.DoodadService;
 import java.util.List;
 import java.util.Optional;
@@ -12,21 +13,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Implementation of the DoodadService interface.
+ * JPA implementation of the DoodadService interface.
  */
 @Service
 @Transactional
-public class DoodadServiceImpl implements DoodadService {
+public class JpaDoodadService implements DoodadService {
 
     private final DoodadRepository doodadRepository;
     private final DoodadMapper doodadMapper;
 
     @Autowired
-    public DoodadServiceImpl(DoodadRepository doodadRepository, DoodadMapper doodadMapper) {
+    public JpaDoodadService(DoodadRepository doodadRepository, DoodadMapper doodadMapper) {
         this.doodadRepository = doodadRepository;
         this.doodadMapper = doodadMapper;
     }
@@ -36,13 +38,6 @@ public class DoodadServiceImpl implements DoodadService {
         Doodad doodad = doodadMapper.toEntity(doodadDto);
         Doodad savedDoodad = doodadRepository.save(doodad);
         return doodadMapper.toDto(savedDoodad);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<DoodadDto> getAllDoodads() {
-        List<Doodad> doodads = doodadRepository.findAll();
-        return doodadMapper.toDtoList(doodads);
     }
 
     @Override
@@ -64,33 +59,36 @@ public class DoodadServiceImpl implements DoodadService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<DoodadDto> findDoodadsPaginated(String name, String description, int page, int size) {
+    public PagedResponse<DoodadDto> findDoodadsPaginated(String name, String description, int page, int size) {
         // Limit page size to 100
         int pageSize = Math.min(size, 100);
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Doodad> doodadPage;
 
-        boolean hasName = name != null;
-        boolean hasDescription = description != null;
+        // Create specifications for name and description filters
+        Specification<Doodad> nameSpec = DoodadSpecifications.nameLike(name);
+        Specification<Doodad> descSpec = DoodadSpecifications.descriptionLike(description);
 
-        if (hasName && hasDescription) {
-            doodadPage = doodadRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(
-                    name, description, pageable);
-        } else if (hasName) {
-            doodadPage = doodadRepository.findByNameContainingIgnoreCase(name, pageable);
-        } else if (hasDescription) {
-            doodadPage = doodadRepository.findByDescriptionContainingIgnoreCase(description, pageable);
-        } else {
-            doodadPage = doodadRepository.findAll(pageable);
+        // Combine specifications if both filters are provided
+        Specification<Doodad> spec = Specification.where(null);
+
+        if (nameSpec != null) {
+            spec = spec.and(nameSpec);
         }
 
+        if (descSpec != null) {
+            spec = spec.and(descSpec);
+        }
+
+        // Find all doodads with specifications
+        Page<Doodad> doodadPage = doodadRepository.findAll(spec, pageable);
+
         List<DoodadDto> doodadDtos = doodadMapper.toDtoList(doodadPage.getContent());
-        PageResponse.PageInfo pageInfo = new PageResponse.PageInfo(
+        PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(
                 doodadPage.getNumber(),
                 doodadPage.getSize(),
                 doodadPage.getTotalPages(),
                 doodadPage.getTotalElements());
 
-        return new PageResponse<>(doodadDtos, pageInfo);
+        return new PagedResponse<>(doodadDtos, pageInfo);
     }
 }

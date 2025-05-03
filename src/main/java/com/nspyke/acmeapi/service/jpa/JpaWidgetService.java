@@ -1,7 +1,7 @@
-package com.nspyke.acmeapi.service.impl;
+package com.nspyke.acmeapi.service.jpa;
 
 import com.nspyke.acmeapi.mapper.WidgetMapper;
-import com.nspyke.acmeapi.model.dto.PageResponse;
+import com.nspyke.acmeapi.model.dto.PagedResponse;
 import com.nspyke.acmeapi.model.dto.WidgetDto;
 import com.nspyke.acmeapi.model.entity.Widget;
 import com.nspyke.acmeapi.repository.WidgetRepository;
@@ -16,17 +16,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Implementation of the WidgetService interface.
+ * JPA implementation of the WidgetService interface.
  */
 @Service
 @Transactional
-public class WidgetServiceImpl implements WidgetService {
+public class JpaWidgetService implements WidgetService {
 
     private final WidgetRepository widgetRepository;
     private final WidgetMapper widgetMapper;
 
     @Autowired
-    public WidgetServiceImpl(WidgetRepository widgetRepository, WidgetMapper widgetMapper) {
+    public JpaWidgetService(WidgetRepository widgetRepository, WidgetMapper widgetMapper) {
         this.widgetRepository = widgetRepository;
         this.widgetMapper = widgetMapper;
     }
@@ -36,13 +36,6 @@ public class WidgetServiceImpl implements WidgetService {
         Widget widget = widgetMapper.toEntity(widgetDto);
         Widget savedWidget = widgetRepository.save(widget);
         return widgetMapper.toDto(savedWidget);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<WidgetDto> getAllWidgets() {
-        List<Widget> widgets = widgetRepository.findAll();
-        return widgetMapper.toDtoList(widgets);
     }
 
     @Override
@@ -64,7 +57,7 @@ public class WidgetServiceImpl implements WidgetService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageResponse<WidgetDto> findWidgetsPaginated(String name, String description, int page, int size) {
+    public PagedResponse<WidgetDto> findWidgetsPaginated(String name, String description, int page, int size) {
         // Limit page size to 100
         int pageSize = Math.min(size, 100);
         Pageable pageable = PageRequest.of(page, pageSize);
@@ -74,23 +67,22 @@ public class WidgetServiceImpl implements WidgetService {
         boolean hasDescription = description != null;
 
         if (hasName && hasDescription) {
-            widgetPage = widgetRepository.findByNameContainingIgnoreCaseAndDescriptionContainingIgnoreCase(
-                    name, description, pageable);
+            widgetPage = widgetRepository.findByNameAndDescription(name, description, pageable);
         } else if (hasName) {
-            widgetPage = widgetRepository.findByNameContainingIgnoreCase(name, pageable);
+            widgetPage = widgetRepository.findByName(name, pageable);
         } else if (hasDescription) {
-            widgetPage = widgetRepository.findByDescriptionContainingIgnoreCase(description, pageable);
+            widgetPage = widgetRepository.findByDescription(description, pageable);
         } else {
             widgetPage = widgetRepository.findAll(pageable);
         }
 
         List<WidgetDto> widgetDtos = widgetMapper.toDtoList(widgetPage.getContent());
-        PageResponse.PageInfo pageInfo = new PageResponse.PageInfo(
+        PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(
                 widgetPage.getNumber(),
                 widgetPage.getSize(),
                 widgetPage.getTotalPages(),
                 widgetPage.getTotalElements());
 
-        return new PageResponse<>(widgetDtos, pageInfo);
+        return new PagedResponse<>(widgetDtos, pageInfo);
     }
 }

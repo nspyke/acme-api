@@ -6,7 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
-import com.nspyke.acmeapi.model.dto.PageResponse;
+import com.nspyke.acmeapi.model.dto.PagedResponse;
 import com.nspyke.acmeapi.model.dto.WidgetDto;
 import com.nspyke.acmeapi.service.WidgetService;
 import java.util.Arrays;
@@ -63,100 +63,100 @@ public class WidgetControllerTest {
     @Test
     public void testGetAllWidgets_NoFilters() {
         // Arrange
-        PageResponse.PageInfo pageInfo = new PageResponse.PageInfo(0, 10, 1, 2);
-        PageResponse<WidgetDto> pageResponse = new PageResponse<>(testWidgets, pageInfo);
-        when(widgetService.findWidgetsPaginated(null, null, 0, 10)).thenReturn(pageResponse);
+        PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 2);
+        PagedResponse<WidgetDto> pagedResponse = new PagedResponse<>(testWidgets, pageInfo);
+        when(widgetService.findWidgetsPaginated(null, null, 0, 10)).thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PageResponse<WidgetDto>> response = widgetController.getAllWidgets(null, null, 0, 10);
+        ResponseEntity<PagedResponse<WidgetDto>> response = widgetController.getAllWidgets(null, null, 0, 10);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(2, response.getBody().getData().size());
-        assertEquals(0, response.getBody().getPage().getNumber());
-        assertEquals(10, response.getBody().getPage().getSize());
-        assertEquals(1, response.getBody().getPage().getTotalPages());
-        assertEquals(2, response.getBody().getPage().getTotalElements());
+        assertEquals(2, response.getBody().data().size());
+        assertEquals(0, response.getBody().page().number());
+        assertEquals(10, response.getBody().page().size());
+        assertEquals(1, response.getBody().page().totalPages());
+        assertEquals(2, response.getBody().page().totalElements());
     }
 
     @Test
     public void testGetAllWidgets_FilterByName() {
         // Arrange
         List<WidgetDto> filteredWidgets = List.of(testWidget);
-        PageResponse.PageInfo pageInfo = new PageResponse.PageInfo(0, 10, 1, 1);
-        PageResponse<WidgetDto> pageResponse = new PageResponse<>(filteredWidgets, pageInfo);
-        when(widgetService.findWidgetsPaginated("Test", null, 0, 10)).thenReturn(pageResponse);
+        PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 1);
+        PagedResponse<WidgetDto> pagedResponse = new PagedResponse<>(filteredWidgets, pageInfo);
+        when(widgetService.findWidgetsPaginated("Test", null, 0, 10)).thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PageResponse<WidgetDto>> response = widgetController.getAllWidgets("Test", null, 0, 10);
+        ResponseEntity<PagedResponse<WidgetDto>> response = widgetController.getAllWidgets("Test", null, 0, 10);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().getData().size());
-        assertEquals("Test Widget", response.getBody().getData().get(0).name());
-        assertEquals(0, response.getBody().getPage().getNumber());
-        assertEquals(1, response.getBody().getPage().getTotalElements());
+        assertEquals(1, response.getBody().data().size());
+        assertEquals("Test Widget", response.getBody().data().get(0).name());
+        assertEquals(0, response.getBody().page().number());
+        assertEquals(1, response.getBody().page().totalElements());
     }
 
     @Test
     public void testGetAllWidgets_FilterByDescription() {
         // Arrange
         List<WidgetDto> filteredWidgets = List.of(testWidget);
-        PageResponse.PageInfo pageInfo = new PageResponse.PageInfo(0, 10, 1, 1);
-        PageResponse<WidgetDto> pageResponse = new PageResponse<>(filteredWidgets, pageInfo);
-        when(widgetService.findWidgetsPaginated(null, "test", 0, 10)).thenReturn(pageResponse);
+        PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 1);
+        PagedResponse<WidgetDto> pagedResponse = new PagedResponse<>(filteredWidgets, pageInfo);
+        when(widgetService.findWidgetsPaginated(null, "test", 0, 10)).thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PageResponse<WidgetDto>> response = widgetController.getAllWidgets(null, "test", 0, 10);
+        ResponseEntity<PagedResponse<WidgetDto>> response = widgetController.getAllWidgets(null, "test", 0, 10);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().getData().size());
-        assertEquals("A test widget", response.getBody().getData().get(0).description());
-        assertEquals(1, response.getBody().getPage().getTotalElements());
+        assertEquals(1, response.getBody().data().size());
+        assertEquals("A test widget", response.getBody().data().get(0).description());
+        assertEquals(1, response.getBody().page().totalElements());
     }
 
     @Test
     public void testGetAllWidgets_FilterByNameAndDescription() {
         // Arrange
         List<WidgetDto> filteredWidgets = List.of(testWidget);
-        PageResponse.PageInfo pageInfo = new PageResponse.PageInfo(0, 10, 1, 1);
-        PageResponse<WidgetDto> pageResponse = new PageResponse<>(filteredWidgets, pageInfo);
-        when(widgetService.findWidgetsPaginated("Test", "test", 0, 10)).thenReturn(pageResponse);
+        PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 1);
+        PagedResponse<WidgetDto> pagedResponse = new PagedResponse<>(filteredWidgets, pageInfo);
+        when(widgetService.findWidgetsPaginated("Test", "test", 0, 10)).thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PageResponse<WidgetDto>> response = widgetController.getAllWidgets("Test", "test", 0, 10);
+        ResponseEntity<PagedResponse<WidgetDto>> response = widgetController.getAllWidgets("Test", "test", 0, 10);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().getData().size());
-        assertEquals("Test Widget", response.getBody().getData().get(0).name());
-        assertEquals("A test widget", response.getBody().getData().get(0).description());
-        assertEquals(1, response.getBody().getPage().getTotalElements());
+        assertEquals(1, response.getBody().data().size());
+        assertEquals("Test Widget", response.getBody().data().get(0).name());
+        assertEquals("A test widget", response.getBody().data().get(0).description());
+        assertEquals(1, response.getBody().page().totalElements());
     }
 
     @Test
     public void testGetAllWidgets_WithPagination() {
         // Arrange
-        PageResponse.PageInfo pageInfo = new PageResponse.PageInfo(1, 1, 2, 2);
-        PageResponse<WidgetDto> pageResponse = new PageResponse<>(List.of(testWidgets.get(1)), pageInfo);
-        when(widgetService.findWidgetsPaginated(null, null, 1, 1)).thenReturn(pageResponse);
+        PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(1, 1, 2, 2);
+        PagedResponse<WidgetDto> pagedResponse = new PagedResponse<>(List.of(testWidgets.get(1)), pageInfo);
+        when(widgetService.findWidgetsPaginated(null, null, 1, 1)).thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PageResponse<WidgetDto>> response = widgetController.getAllWidgets(null, null, 1, 1);
+        ResponseEntity<PagedResponse<WidgetDto>> response = widgetController.getAllWidgets(null, null, 1, 1);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().getData().size());
-        assertEquals(1, response.getBody().getPage().getNumber());
-        assertEquals(1, response.getBody().getPage().getSize());
-        assertEquals(2, response.getBody().getPage().getTotalPages());
-        assertEquals(2, response.getBody().getPage().getTotalElements());
+        assertEquals(1, response.getBody().data().size());
+        assertEquals(1, response.getBody().page().number());
+        assertEquals(1, response.getBody().page().size());
+        assertEquals(2, response.getBody().page().totalPages());
+        assertEquals(2, response.getBody().page().totalElements());
     }
 
     @Test

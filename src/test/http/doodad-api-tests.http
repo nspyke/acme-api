@@ -30,7 +30,7 @@ Content-Type: application/json
 }
 
 ### Filter doodads by name
-GET http://localhost:8080/api/v1/doodads?name=Test
+GET http://localhost:8080/api/v1/doodads?name=updated
 
 ### Filter doodads by description
 GET http://localhost:8080/api/v1/doodads?description=test

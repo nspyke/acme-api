@@ -7,7 +7,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 import com.nspyke.acmeapi.model.dto.DoodadDto;
-import com.nspyke.acmeapi.model.dto.PageResponse;
+import com.nspyke.acmeapi.model.dto.PagedResponse;
 import com.nspyke.acmeapi.service.DoodadService;
 import java.util.Arrays;
 import java.util.List;
@@ -64,100 +64,100 @@ public class DoodadControllerTest {
     @Test
     public void testGetAllDoodads_NoFilters() {
         // Arrange
-        PageResponse.PageInfo pageInfo = new PageResponse.PageInfo(0, 10, 1, 2);
-        PageResponse<DoodadDto> pageResponse = new PageResponse<>(testDoodads, pageInfo);
-        when(doodadService.findDoodadsPaginated(null, null, 0, 10)).thenReturn(pageResponse);
+        PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 2);
+        PagedResponse<DoodadDto> pagedResponse = new PagedResponse<>(testDoodads, pageInfo);
+        when(doodadService.findDoodadsPaginated(null, null, 0, 10)).thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PageResponse<DoodadDto>> response = doodadController.getAllDoodads(null, null, 0, 10);
+        ResponseEntity<PagedResponse<DoodadDto>> response = doodadController.getAllDoodads(null, null, 0, 10);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(2, response.getBody().getData().size());
-        assertEquals(0, response.getBody().getPage().getNumber());
-        assertEquals(10, response.getBody().getPage().getSize());
-        assertEquals(1, response.getBody().getPage().getTotalPages());
-        assertEquals(2, response.getBody().getPage().getTotalElements());
+        assertEquals(2, response.getBody().data().size());
+        assertEquals(0, response.getBody().page().number());
+        assertEquals(10, response.getBody().page().size());
+        assertEquals(1, response.getBody().page().totalPages());
+        assertEquals(2, response.getBody().page().totalElements());
     }
 
     @Test
     public void testGetAllDoodads_FilterByName() {
         // Arrange
         List<DoodadDto> filteredDoodads = List.of(testDoodad);
-        PageResponse.PageInfo pageInfo = new PageResponse.PageInfo(0, 10, 1, 1);
-        PageResponse<DoodadDto> pageResponse = new PageResponse<>(filteredDoodads, pageInfo);
-        when(doodadService.findDoodadsPaginated("Test", null, 0, 10)).thenReturn(pageResponse);
+        PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 1);
+        PagedResponse<DoodadDto> pagedResponse = new PagedResponse<>(filteredDoodads, pageInfo);
+        when(doodadService.findDoodadsPaginated("Test", null, 0, 10)).thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PageResponse<DoodadDto>> response = doodadController.getAllDoodads("Test", null, 0, 10);
+        ResponseEntity<PagedResponse<DoodadDto>> response = doodadController.getAllDoodads("Test", null, 0, 10);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().getData().size());
-        assertEquals("Test Doodad", response.getBody().getData().get(0).name());
-        assertEquals(0, response.getBody().getPage().getNumber());
-        assertEquals(1, response.getBody().getPage().getTotalElements());
+        assertEquals(1, response.getBody().data().size());
+        assertEquals("Test Doodad", response.getBody().data().get(0).name());
+        assertEquals(0, response.getBody().page().number());
+        assertEquals(1, response.getBody().page().totalElements());
     }
 
     @Test
     public void testGetAllDoodads_FilterByDescription() {
         // Arrange
         List<DoodadDto> filteredDoodads = List.of(testDoodad);
-        PageResponse.PageInfo pageInfo = new PageResponse.PageInfo(0, 10, 1, 1);
-        PageResponse<DoodadDto> pageResponse = new PageResponse<>(filteredDoodads, pageInfo);
-        when(doodadService.findDoodadsPaginated(null, "test", 0, 10)).thenReturn(pageResponse);
+        PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 1);
+        PagedResponse<DoodadDto> pagedResponse = new PagedResponse<>(filteredDoodads, pageInfo);
+        when(doodadService.findDoodadsPaginated(null, "test", 0, 10)).thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PageResponse<DoodadDto>> response = doodadController.getAllDoodads(null, "test", 0, 10);
+        ResponseEntity<PagedResponse<DoodadDto>> response = doodadController.getAllDoodads(null, "test", 0, 10);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().getData().size());
-        assertEquals("A test doodad", response.getBody().getData().get(0).description());
-        assertEquals(1, response.getBody().getPage().getTotalElements());
+        assertEquals(1, response.getBody().data().size());
+        assertEquals("A test doodad", response.getBody().data().get(0).description());
+        assertEquals(1, response.getBody().page().totalElements());
     }
 
     @Test
     public void testGetAllDoodads_FilterByNameAndDescription() {
         // Arrange
         List<DoodadDto> filteredDoodads = List.of(testDoodad);
-        PageResponse.PageInfo pageInfo = new PageResponse.PageInfo(0, 10, 1, 1);
-        PageResponse<DoodadDto> pageResponse = new PageResponse<>(filteredDoodads, pageInfo);
-        when(doodadService.findDoodadsPaginated("Test", "test", 0, 10)).thenReturn(pageResponse);
+        PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(0, 10, 1, 1);
+        PagedResponse<DoodadDto> pagedResponse = new PagedResponse<>(filteredDoodads, pageInfo);
+        when(doodadService.findDoodadsPaginated("Test", "test", 0, 10)).thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PageResponse<DoodadDto>> response = doodadController.getAllDoodads("Test", "test", 0, 10);
+        ResponseEntity<PagedResponse<DoodadDto>> response = doodadController.getAllDoodads("Test", "test", 0, 10);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().getData().size());
-        assertEquals("Test Doodad", response.getBody().getData().get(0).name());
-        assertEquals("A test doodad", response.getBody().getData().get(0).description());
-        assertEquals(1, response.getBody().getPage().getTotalElements());
+        assertEquals(1, response.getBody().data().size());
+        assertEquals("Test Doodad", response.getBody().data().get(0).name());
+        assertEquals("A test doodad", response.getBody().data().get(0).description());
+        assertEquals(1, response.getBody().page().totalElements());
     }
 
     @Test
     public void testGetAllDoodads_WithPagination() {
         // Arrange
-        PageResponse.PageInfo pageInfo = new PageResponse.PageInfo(1, 1, 2, 2);
-        PageResponse<DoodadDto> pageResponse = new PageResponse<>(List.of(testDoodads.get(1)), pageInfo);
-        when(doodadService.findDoodadsPaginated(null, null, 1, 1)).thenReturn(pageResponse);
+        PagedResponse.PageInfo pageInfo = new PagedResponse.PageInfo(1, 1, 2, 2);
+        PagedResponse<DoodadDto> pagedResponse = new PagedResponse<>(List.of(testDoodads.get(1)), pageInfo);
+        when(doodadService.findDoodadsPaginated(null, null, 1, 1)).thenReturn(pagedResponse);
 
         // Act
-        ResponseEntity<PageResponse<DoodadDto>> response = doodadController.getAllDoodads(null, null, 1, 1);
+        ResponseEntity<PagedResponse<DoodadDto>> response = doodadController.getAllDoodads(null, null, 1, 1);
 
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertNotNull(response.getBody());
-        assertEquals(1, response.getBody().getData().size());
-        assertEquals(1, response.getBody().getPage().getNumber());
-        assertEquals(1, response.getBody().getPage().getSize());
-        assertEquals(2, response.getBody().getPage().getTotalPages());
-        assertEquals(2, response.getBody().getPage().getTotalElements());
+        assertEquals(1, response.getBody().data().size());
+        assertEquals(1, response.getBody().page().number());
+        assertEquals(1, response.getBody().page().size());
+        assertEquals(2, response.getBody().page().totalPages());
+        assertEquals(2, response.getBody().page().totalElements());
     }
 
     @Test

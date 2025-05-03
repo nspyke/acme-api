@@ -1,6 +1,6 @@
 package com.nspyke.acmeapi.controller;
 
-import com.nspyke.acmeapi.model.dto.PageResponse;
+import com.nspyke.acmeapi.model.dto.PagedResponse;
 import com.nspyke.acmeapi.model.dto.WidgetDto;
 import com.nspyke.acmeapi.service.WidgetService;
 import jakarta.validation.Valid;
@@ -45,12 +45,12 @@ public class WidgetController {
      * @return a paginated response of widgets matching the filters
      */
     @GetMapping
-    public ResponseEntity<PageResponse<WidgetDto>> getAllWidgets(
+    public ResponseEntity<PagedResponse<WidgetDto>> getAllWidgets(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String description,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
-        PageResponse<WidgetDto> widgets = widgetService.findWidgetsPaginated(name, description, page, size);
+        PagedResponse<WidgetDto> widgets = widgetService.findWidgetsPaginated(name, description, page, size);
         return ResponseEntity.ok(widgets);
     }
 

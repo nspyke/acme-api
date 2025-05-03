@@ -1,7 +1,7 @@
 package com.nspyke.acmeapi.controller;
 
 import com.nspyke.acmeapi.model.dto.DoodadDto;
-import com.nspyke.acmeapi.model.dto.PageResponse;
+import com.nspyke.acmeapi.model.dto.PagedResponse;
 import com.nspyke.acmeapi.service.DoodadService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,13 +45,13 @@ public class DoodadController {
      * @return a paginated response of doodads matching the filters
      */
     @GetMapping
-    public ResponseEntity<PageResponse<DoodadDto>> getAllDoodads(
+    public ResponseEntity<PagedResponse<DoodadDto>> getAllDoodads(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String description,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
 
-        PageResponse<DoodadDto> doodads = doodadService.findDoodadsPaginated(name, description, page, size);
+        PagedResponse<DoodadDto> doodads = doodadService.findDoodadsPaginated(name, description, page, size);
         return ResponseEntity.ok(doodads);
     }
 
