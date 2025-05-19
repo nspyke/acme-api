@@ -4,6 +4,7 @@ info:
   title: ACME API
   description: |
     ACME Corporation API for Widgets and Doodads.
+    Widgets can contain multiple doodads, forming a one-to-many relationship.
   version: 1.0.0
 
 servers:

@@ -2,6 +2,8 @@
 
 ACME API is a Spring Boot application that provides RESTful endpoints for managing Widgets and Doodads for ACME Corporation.
 
+Widgets and Doodads share a **one-to-many** relationship: a single widget can contain multiple doodads.
+
 ## Prerequisites
 
 - Java 21 or higher
