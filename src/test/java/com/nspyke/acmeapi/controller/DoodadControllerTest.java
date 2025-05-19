@@ -40,15 +40,15 @@ public class DoodadControllerTest {
         MockitoAnnotations.openMocks(this);
 
         // Create test data
-        testDoodad = new DoodadDto(1L, "Test Doodad", "A test doodad", "test-image.jpg", 10.99F);
-        DoodadDto doodad2 = new DoodadDto(2L, "Another Doodad", "Another test doodad", "another-image.jpg", 15.99F);
+        testDoodad = new DoodadDto(1L, "Test Doodad", "A test doodad", "test-image.jpg", 10.99F, 1L);
+        DoodadDto doodad2 = new DoodadDto(2L, "Another Doodad", "Another test doodad", "another-image.jpg", 15.99F, 1L);
         testDoodads = Arrays.asList(testDoodad, doodad2);
     }
 
     @Test
     public void testCreateDoodad() {
         // Arrange
-        DoodadDto inputDoodad = new DoodadDto("Test Doodad", "A test doodad", "test-image.jpg", 10.99F);
+        DoodadDto inputDoodad = new DoodadDto("Test Doodad", "A test doodad", "test-image.jpg", 10.99F, 1L);
         when(doodadService.createDoodad(any(DoodadDto.class))).thenReturn(testDoodad);
 
         // Act
@@ -196,7 +196,7 @@ public class DoodadControllerTest {
     public void testUpdateDoodad_Found() {
         // Arrange
         DoodadDto updatedDoodad =
-                new DoodadDto(1L, "Updated Doodad", "An updated test doodad", "updated-image.jpg", 12.99F);
+                new DoodadDto(1L, "Updated Doodad", "An updated test doodad", "updated-image.jpg", 12.99F, 1L);
         when(doodadService.updateDoodad(anyLong(), any(DoodadDto.class))).thenReturn(Optional.of(updatedDoodad));
 
         // Act
@@ -213,7 +213,7 @@ public class DoodadControllerTest {
     public void testUpdateDoodad_NotFound() {
         // Arrange
         DoodadDto updatedDoodad =
-                new DoodadDto(999L, "Updated Doodad", "An updated test doodad", "updated-image.jpg", 12.99F);
+                new DoodadDto(999L, "Updated Doodad", "An updated test doodad", "updated-image.jpg", 12.99F, 1L);
         when(doodadService.updateDoodad(anyLong(), any(DoodadDto.class))).thenReturn(Optional.empty());
 
         // Act

@@ -5,7 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Table;
+import java.util.List;
+import com.nspyke.acmeapi.model.entity.Doodad;
 
 /**
  * Entity class representing a Widget in the system.
@@ -26,6 +30,9 @@ public class Widget {
 
     @Column
     private String image;
+
+    @OneToMany(mappedBy = "widget", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Doodad> doodads;
 
     // Default constructor required by JPA
     public Widget() {}
@@ -70,12 +77,21 @@ public class Widget {
         this.image = image;
     }
 
+    public List<Doodad> getDoodads() {
+        return doodads;
+    }
+
+    public void setDoodads(List<Doodad> doodads) {
+        this.doodads = doodads;
+    }
+
     @Override
     public String toString() {
         return "Widget{" + "id="
                 + id + ", name='"
                 + name + '\'' + ", description='"
                 + description + '\'' + ", image='"
-                + image + '\'' + '}';
+                + image + '\'' + ", doodadCount="
+                + (doodads != null ? doodads.size() : 0) + '}';
     }
 }
