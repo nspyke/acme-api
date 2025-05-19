@@ -5,7 +5,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Table;
+
+import com.nspyke.acmeapi.model.entity.Widget;
 
 /**
  * Entity class representing a Doodad in the system.
@@ -30,15 +35,20 @@ public class Doodad {
     @Column(nullable = false)
     private Float price;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "widget_id", nullable = false)
+    private Widget widget;
+
     // Default constructor required by JPA
     public Doodad() {}
 
     // Constructor with all fields except id
-    public Doodad(String name, String description, String image, Float price) {
+    public Doodad(String name, String description, String image, Float price, Widget widget) {
         this.name = name;
         this.description = description;
         this.image = image;
         this.price = price;
+        this.widget = widget;
     }
 
     // Getters and Setters
@@ -82,6 +92,14 @@ public class Doodad {
         this.price = price;
     }
 
+    public Widget getWidget() {
+        return widget;
+    }
+
+    public void setWidget(Widget widget) {
+        this.widget = widget;
+    }
+
     @Override
     public String toString() {
         return "Doodad{" + "id="
@@ -89,6 +107,7 @@ public class Doodad {
                 + name + '\'' + ", description='"
                 + description + '\'' + ", image='"
                 + image + '\'' + ", price="
-                + price + '}';
+                + price + ", widgetId="
+                + (widget != null ? widget.getId() : null) + '}';
     }
 }

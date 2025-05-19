@@ -2,6 +2,7 @@ package com.nspyke.acmeapi.mapper;
 
 import com.nspyke.acmeapi.model.dto.DoodadDto;
 import com.nspyke.acmeapi.model.entity.Doodad;
+import com.nspyke.acmeapi.model.entity.Widget;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
@@ -23,7 +24,12 @@ public class DoodadMapper {
             return null;
         }
         return new DoodadDto(
-                doodad.getId(), doodad.getName(), doodad.getDescription(), doodad.getImage(), doodad.getPrice());
+                doodad.getId(),
+                doodad.getName(),
+                doodad.getDescription(),
+                doodad.getImage(),
+                doodad.getPrice(),
+                doodad.getWidget() != null ? doodad.getWidget().getId() : null);
     }
 
     /**
@@ -43,6 +49,12 @@ public class DoodadMapper {
         doodad.setDescription(doodadDto.description());
         doodad.setImage(doodadDto.image());
         doodad.setPrice(doodadDto.price());
+
+        if (doodadDto.widgetId() != null) {
+            Widget widget = new Widget();
+            widget.setId(doodadDto.widgetId());
+            doodad.setWidget(widget);
+        }
 
         return doodad;
     }
@@ -71,6 +83,12 @@ public class DoodadMapper {
         }
         if (doodadDto.price() != null) {
             doodad.setPrice(doodadDto.price());
+        }
+        if (doodadDto.widgetId() != null) {
+            if (doodad.getWidget() == null) {
+                doodad.setWidget(new Widget());
+            }
+            doodad.getWidget().setId(doodadDto.widgetId());
         }
 
         return doodad;

@@ -13,13 +13,14 @@ public record DoodadDto(
         @NotBlank(message = "Name is required") String name,
         @NotBlank(message = "Description is required") String description,
         @NotBlank(message = "Image is required") String image,
-        @NotNull(message = "Price is required") @Positive(message = "Price must be positive") Float price) {
+        @NotNull(message = "Price is required") @Positive(message = "Price must be positive") Float price,
+        @NotNull(message = "Widget ID is required") Long widgetId) {
 
     /**
      * Default constructor that creates a DoodadDto with null values.
      */
     public DoodadDto() {
-        this(null, null, null, null, null);
+        this(null, null, null, null, null, null);
     }
 
     /**
@@ -30,7 +31,7 @@ public record DoodadDto(
      * @param image       the doodad image reference
      * @param price       the doodad price
      */
-    public DoodadDto(String name, String description, String image, Float price) {
-        this(null, name, description, image, price);
+    public DoodadDto(String name, String description, String image, Float price, Long widgetId) {
+        this(null, name, description, image, price, widgetId);
     }
 }
